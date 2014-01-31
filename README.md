@@ -11,6 +11,13 @@ unfortunately is off by default.
 What this script does is enable/disable Fn-Lock for your keyboard, so you can
 use the Fn-keys as Fn-keys.
 
+Requirements
+------------
+
+This was developed under a Debian unstable kernel, 3.12-1-amd64, and has been
+reported to work for at least 3.11. However older kernels (3.6, for example)
+don't send the report. Not sure why currently.
+
 Using
 -----
 
