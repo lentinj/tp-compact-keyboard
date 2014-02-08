@@ -16,8 +16,8 @@
 #include <linux/hid.h>
 #include <linux/module.h>
 
-#define BT_VENDOR_ID_LENOVO	0
-#define BT_DEVICE_ID_CBTKBD	0
+#define USB_VENDOR_ID_LENOVO	0x17ef
+#define USB_DEVICE_ID_CBTKBD	0x6048
 
 /*
  * Keyboard sends non-standard reports for most "hotkey" Fn functions.
@@ -46,7 +46,7 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
-	{ HID_BLUETOOTH_DEVICE(BT_VENDOR_ID_LENOVO, BT_DEVICE_ID_CBTKBD) },
+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_CBTKBD) },
 
 	{ }
 };
