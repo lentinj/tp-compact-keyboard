@@ -12,10 +12,10 @@ fi
 for HIDRAW in $HIDRAWS; do
     if [ "$1" = "--fn-lock-disable" ]; then
         echo Disabling Fn lock for /dev/$HIDRAW...
-        /bin/echo -ne "\x18\x05\x00\x00\x00\x00\x00\x00\x00" | dd of=/dev/$HIDRAW 2>/dev/null
+        /bin/echo -ne "\x18\x05\x00" | dd of=/dev/$HIDRAW 2>/dev/null
     elif [ "$1" = "--fn-lock-enable" ]; then
         echo Enabling Fn lock for /dev/$HIDRAW...
-        /bin/echo -ne "\x18\x05\x01\x00\x00\x00\x00\x00\x00" | dd of=/dev/$HIDRAW 2>/dev/null
+        /bin/echo -ne "\x18\x05\x01" | dd of=/dev/$HIDRAW 2>/dev/null
     else
         echo Nothing to do.
     fi
