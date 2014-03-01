@@ -10,6 +10,10 @@ fi
 
 # Do command for all keyboards attached
 for HIDRAW in $HIDRAWS; do
+    if [ ! -w "/dev/$HIDRAW" ]; then
+        echo "Permission denied: cannot write to /dev/$HIDRAW (are you root?)"
+        exit 1
+    fi
     if [ "$1" = "--fn-lock-disable" ]; then
         echo Disabling Fn lock for /dev/$HIDRAW...
         /bin/echo -ne "\x18\x05\x00" | dd of=/dev/$HIDRAW 2>/dev/null
