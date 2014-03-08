@@ -37,6 +37,20 @@
  * F12:	KEY_FN_F12		Open My computer (6 boxes)
  */
 
+/*
+ * HID_UP_MSVENDOR report descriptor doesn't cover KEY_FN_ESC
+ */
+static __u8 *tpcompactkbd_report_fixup(struct hid_device *hdev, __u8 *rdesc,
+		unsigned int *rsize)
+{
+	if (*rsize >= 0x120 && rdesc[0x117] == 0x1a && rdesc[0x118] == 0xf1 && rdesc[0x11b] == 0xfc) {
+		hid_info(hdev, "setting vendor usage page to go 0x00..0xff\n");
+		rdesc[0x118] == 0x00;
+		rdesc[0x11b] == 0xff;
+	}
+	return rdesc;
+}
+
 #define tpckbd_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
 					EV_KEY, (c))
 static int tpcompactkbd_input_mapping(struct hid_device *hdev,
@@ -80,6 +94,7 @@ MODULE_DEVICE_TABLE(hid, tpcompactkbd_devices);
 static struct hid_driver tpcompactkbd_driver = {
 	.name = "lenovo_tpcompactkbd",
 	.id_table = tpcompactkbd_devices,
+	.report_fixup = tpcompactkbd_report_fixup,
 	.input_mapping = tpcompactkbd_input_mapping,
 };
 module_hid_driver(tpcompactkbd_driver);
