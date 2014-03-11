@@ -20,7 +20,22 @@ for HIDRAW in $HIDRAWS; do
     elif [ "$1" = "--fn-lock-enable" ]; then
         echo Enabling Fn lock for /dev/$HIDRAW...
         /bin/echo -ne "\x18\x05\x01" | dd of=/dev/$HIDRAW 2>/dev/null
+    elif [ "$1" = "--native-fn-enable" ]; then
+        echo Enabling native mode for F7/F9/F11 for /dev/$HIDRAW...
+        /bin/echo -ne "\x18\x01\x03" | dd of=/dev/$HIDRAW 2>/dev/null
+    elif [ "$1" = "--native-mouse-disable" ]; then
+        echo Disabling native mode for middle button for /dev/$HIDRAW...
+        /bin/echo -ne "\x18\x09\x00" | dd of=/dev/$HIDRAW 2>/dev/null
+    elif [ "$1" = "--native-mouse-enable" ]; then
+        echo Enabling native mode for middle button for /dev/$HIDRAW...
+        /bin/echo -ne "\x18\x09\x01" | dd of=/dev/$HIDRAW 2>/dev/null
     else
         echo Nothing to do.
     fi
 done
+
+# All HID DATA packets sent to keyboard on startup
+# 18 01 03 - Make F7/F9/F11 return custom single events, as opposed to strings of keys
+# 18 05 01 - Enable fn-lock
+# 18 02 05 - ?
+# 18 09 01 - Disable middle mouse button's standard response (leave custom one working)
