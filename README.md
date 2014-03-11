@@ -44,3 +44,25 @@ You've probably noticed that most of the default Fn-key functions do nothing.
 These are reported by the keyboard, but not as regular keys. One could write a
 kernel driver to fix this (i.e. map them back to regular keys), but I haven't
 yet.
+
+How I did it
+------------
+
+I worked out the custom commands by sniffing what the windows driver did.
+Firstly I set up an XP vm in KVM/QEMU and installed the drivers. Then I
+disconnected the keyboard from my computer, and ensured that my user running
+QEMU could write to the ``/dev/bus/usb`` node associated with my bluetooth
+dongle.
+
+Wireshark was readied for capture::
+
+    # modprobe usbmon
+    # wireshark
+
+Then, I let windows use the bluetooth dongle::
+
+    (qemu) usb_add host:0a5c:217f
+
+If you capture the whole association process then you should be able to view
+HID packets to/from the keyboard (filter for ``bthid``). The particuarly
+interesting ones here are the ones going to the keyboard.
