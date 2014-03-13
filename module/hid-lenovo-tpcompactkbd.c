@@ -46,27 +46,56 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_CONSUMER) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		/* These codes are used before 18 01 03 is sent to keyboard */
-		case 0x0070:	tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);	return 1;
-		case 0x006f:	tpckbd_map_key_clear(KEY_BRIGHTNESSUP);	return 1;
-		case 0x03f1:	tpckbd_map_key_clear(KEY_FN_F8);	return 1;
-		case 0x0221:	tpckbd_map_key_clear(KEY_SEARCH);	return 1;
-		case 0x03f2:	tpckbd_map_key_clear(KEY_FN_F12);	return 1;
+		case 0x0070:
+			/* Used before 18 01 03 is sent to keyboard */
+			tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);
+			return 1;
+		case 0x006f:
+			/* Used before 18 01 03 is sent to keyboard */
+			tpckbd_map_key_clear(KEY_BRIGHTNESSUP);
+			return 1;
+		case 0x03f1:
+			tpckbd_map_key_clear(KEY_FN_F8);
+			return 1;
+		case 0x0221:
+			tpckbd_map_key_clear(KEY_SEARCH);
+			return 1;
+		case 0x03f2:
+			tpckbd_map_key_clear(KEY_FN_F12);
+			return 1;
 		}
 	}
 
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		case 0x00f0:	tpckbd_map_key_clear(KEY_FN_ESC);	return 1;
-		case 0x00f1:	tpckbd_map_key_clear(KEY_MICMUTE);	return 1;
-		case 0x00f2:	tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);	return 1;
-		case 0x00f3:	tpckbd_map_key_clear(KEY_BRIGHTNESSUP);		return 1;
-		case 0x00f4:	tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);	return 1;
-		case 0x00f5:	tpckbd_map_key_clear(KEY_FN_F8);	return 1;
-		case 0x00f6:	tpckbd_map_key_clear(KEY_CONFIG);	return 1;
-		case 0x00f8:	tpckbd_map_key_clear(KEY_FN_F11);	return 1;
-		case 0x00fa:	tpckbd_map_key_clear(KEY_FN_ESC);	return 1;
+		case 0x00f0:
+			tpckbd_map_key_clear(KEY_FN_ESC);
+			return 1;
+		case 0x00f1:
+			tpckbd_map_key_clear(KEY_MICMUTE);
+			return 1;
+		case 0x00f2:
+			tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);
+			return 1;
+		case 0x00f3:
+			tpckbd_map_key_clear(KEY_BRIGHTNESSUP);
+			return 1;
+		case 0x00f4:
+			tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);
+			return 1;
+		case 0x00f5:
+			tpckbd_map_key_clear(KEY_FN_F8);
+			return 1;
+		case 0x00f6:
+			tpckbd_map_key_clear(KEY_CONFIG);
+			return 1;
+		case 0x00f8:
+			tpckbd_map_key_clear(KEY_FN_F11);
+			return 1;
+		case 0x00fa:
+			tpckbd_map_key_clear(KEY_FN_ESC);
+			return 1;
 		}
 	}
 
