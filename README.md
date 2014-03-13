@@ -8,22 +8,35 @@ the Fn-keys have been replaced with some random functions Lenovo thought more
 useful. The Fn-Lock switching is handled by the windows drivers, and
 unfortunately is off by default.
 
-What this script does is enable/disable Fn-Lock for your keyboard, so you can
-use the Fn-keys as Fn-keys.
+There is also a physically-identical USB version of this keyboard. I'm guessing
+that a lot of this would apply here too, but I do not have one to test.
 
-Requirements
-------------
+Kernel module
+-------------
+
+I have written a HID driver to cope with the keyboard's quirks. It enables
+fn-lock by default and allows you to toggle via. sysfs.
+
+For more information, see the module directory.
+
+tp-compact-keyboard
+-------------------
+
+If you don't want to install the kernel module, you can use the
+tp-compact-keyboard script to at least enable fn-lock.
+
+### Requirements
 
 This was developed under a Debian unstable kernel, 3.12-1-amd64, and has been
 reported to work for at least 3.11. However older kernels (3.6, for example)
 don't send the report. Not sure why currently.
 
-Using
------
+### Using
 
 To enable/disable Fn-Lock, do "./tp-compact-keyboard --fn-lock-disable" or
 "./tp-compact-keyboard --fn-lock-enable". This will find any bluetooth
-keyboards connected and enable/disable. 
+keyboards connected and enable/disable. It has a few other functions too, but
+they're not very useful on their own. Have a look at the source.
 
 I'm assuming what you really want to do is force Fn-Lock on and forget about it
 though. To do this, do the following as root:
@@ -33,17 +46,6 @@ though. To do this, do the following as root:
     cp tp-compact-keyboard.rules /etc/udev/rules.d/tp-compact-keyboard.rules
 
 Then udev will enable Fn-lock every time the keyboard is connected.
-
-What this doesn't do
---------------------
-
-There is also a physically-identical USB version of this keyboard. I do not
-have one, nor know if it suffers the same problems.
-
-You've probably noticed that most of the default Fn-key functions do nothing.
-These are reported by the keyboard, but not as regular keys. One could write a
-kernel driver to fix this (i.e. map them back to regular keys), but I haven't
-yet.
 
 How I did it
 ------------
