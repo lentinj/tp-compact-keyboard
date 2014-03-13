@@ -12,7 +12,6 @@
  * any later version.
  */
 
-#include <linux/kernel.h> /*TODO: For debugging */
 #include <linux/device.h>
 #include <linux/hid.h>
 #include <linux/module.h>
@@ -24,32 +23,20 @@
  * Keyboard sends non-standard reports for most "hotkey" Fn functions.
  * Map these back to regular keys.
  *
- * Esc:	KEY_FN_ESC		FnLock [TODO: Not mapped]
+ * TODO: Fn-lock control
+ *
+ * Esc:	KEY_FN_ESC		FnLock
  * (F1--F3 are regular keys)
  * F4:	KEY_MICMUTE		Mic Mute
  * F5:	KEY_BRIGHTNESSDOWN	Brightness down
  * F6:	KEY_BRIGHTNESSUP	Brightness up
- * F7:	KEY_SWITCHVIDEOMODE	External display (projector) [TODO: Win-P, SwMode]
+ * F7:	KEY_SWITCHVIDEOMODE	External display (projector)
  * F8:	KEY_FN_F8		Wireless
- * F9:	KEY_CONFIG		Control panel / settings [TODO: Win-F21, Config]
+ * F9:	KEY_CONFIG		Control panel / settings
  * F10:	KEY_SEARCH		Search
- * F11:	KEY_FN_F11		View open applications (3 boxes) [TODO: Ctrl-Alt-Tab, F11]
+ * F11:	KEY_FN_F11		View open applications (3 boxes)
  * F12:	KEY_FN_F12		Open My computer (6 boxes)
  */
-
-/*
- * HID_UP_MSVENDOR report descriptor doesn't cover KEY_FN_ESC
- */
-static __u8 *tpcompactkbd_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-		unsigned int *rsize)
-{
-	if (*rsize >= 0x120 && rdesc[0x117] == 0x1a && rdesc[0x118] == 0xf1 && rdesc[0x11b] == 0xfc) {
-		hid_info(hdev, "setting vendor usage page to go 0x00..0xff\n");
-		rdesc[0x118] == 0x00;
-		rdesc[0x11b] == 0xff;
-	}
-	return rdesc;
-}
 
 #define tpckbd_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
 					EV_KEY, (c))
@@ -60,6 +47,7 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_CONSUMER) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
+		/* These codes are used before 18 01 03 is sent to keyboard */
 		case 0x0070:	tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);	return 1;
 		case 0x006f:	tpckbd_map_key_clear(KEY_BRIGHTNESSUP);	return 1;
 		case 0x03f1:	tpckbd_map_key_clear(KEY_FN_F8);	return 1;
@@ -71,17 +59,59 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
+		case 0x00f0:	tpckbd_map_key_clear(KEY_FN_ESC);	return 1;
 		case 0x00f1:	tpckbd_map_key_clear(KEY_MICMUTE);	return 1;
-		case 0x00f4:	tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);	return 1; /* Down */
-		case 0x00f5:	tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);	return 1; /* Up */
-		case 0x00f6:	tpckbd_map_key_clear(KEY_CONFIG);	return 1; /* Down */
-		case 0x00f7:	tpckbd_map_key_clear(KEY_CONFIG);	return 1; /* Up */
-		case 0x00f8:	tpckbd_map_key_clear(KEY_FN_F11);	return 1; /* Down */
-		case 0x00f9:	tpckbd_map_key_clear(KEY_FN_F11);	return 1; /* Up */
+		case 0x00f2:	tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);	return 1;
+		case 0x00f3:	tpckbd_map_key_clear(KEY_BRIGHTNESSUP);		return 1;
+		case 0x00f4:	tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);	return 1;
+		case 0x00f5:	tpckbd_map_key_clear(KEY_FN_F8);	return 1;
+		case 0x00f6:	tpckbd_map_key_clear(KEY_CONFIG);	return 1;
+		case 0x00f8:	tpckbd_map_key_clear(KEY_FN_F11);	return 1;
+		case 0x00fa:	tpckbd_map_key_clear(KEY_FN_ESC);	return 1;
 		}
 	}
 
 	return 0;
+}
+
+static int tpcompactkbd_send_cmd(struct hid_device *hdev,
+			__u8 byte2, __u8 byte3)
+{
+	unsigned char buf[] = {0x18, byte2, byte3};
+
+	return hdev->hid_output_raw_report(hdev, buf, sizeof(buf),
+						HID_OUTPUT_REPORT);
+}
+
+static int tpcompactkbd_probe(struct hid_device *hdev,
+			const struct hid_device_id *id)
+{
+	int ret;
+
+	ret = hid_parse(hdev);
+	if (ret) {
+		hid_err(hdev, "hid_parse failed\n");
+		goto err;
+	}
+
+	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
+	if (ret) {
+		hid_err(hdev, "hid_hw_start failed\n");
+		goto err;
+	}
+
+	/*
+	 * Tell the keyboard a driver understands it, and turn F7, F9, F11 into
+	 * regular keys
+	 */
+	ret = tpcompactkbd_send_cmd(hdev, 0x01, 0x03);
+	if (ret)
+		hid_warn(hdev, "Failed to switch F7/9/11 into regular keys\n");
+
+	return 0;
+
+err:
+	return ret;
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
@@ -94,8 +124,8 @@ MODULE_DEVICE_TABLE(hid, tpcompactkbd_devices);
 static struct hid_driver tpcompactkbd_driver = {
 	.name = "lenovo_tpcompactkbd",
 	.id_table = tpcompactkbd_devices,
-	.report_fixup = tpcompactkbd_report_fixup,
 	.input_mapping = tpcompactkbd_input_mapping,
+	.probe = tpcompactkbd_probe,
 };
 module_hid_driver(tpcompactkbd_driver);
 
