@@ -18,12 +18,15 @@ Then build:
 
     $ make
 
-For debugging, first connect the keyboard then:
+For debugging, first connect the keyboard then bind driver manually:
 
     # insmod hid-lenovo-tpcompactkbd.ko
     # HID_DEVICE=$(basename /sys/bus/hid/drivers/*/0005\:17EF\:6048*)
     # echo -n $HID_DEVICE > /sys/bus/hid/drivers/hid-generic/unbind
     # echo -n $HID_DEVICE > /sys/bus/hid/drivers/lenovo_tpcompactkbd/bind
+
+In theory it should bind automatically after installing, but I can't get it to
+work.
 
 Notes on creating
 -----------------
