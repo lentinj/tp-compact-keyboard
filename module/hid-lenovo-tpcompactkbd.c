@@ -104,7 +104,7 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 
 /* Send a config command to the keyboard */
 static int tpcompactkbd_send_cmd(struct hid_device *hdev,
-			__u8 byte2, __u8 byte3)
+			unsigned char byte2, unsigned char byte3)
 {
 	unsigned char buf[] = {0x18, byte2, byte3};
 
@@ -114,7 +114,7 @@ static int tpcompactkbd_send_cmd(struct hid_device *hdev,
 
 /* Set fnlock on or off */
 static int tpcompactkbd_set_fnlock(struct hid_device *hdev,
-			__u8 fn_lock_on)
+			unsigned char fn_lock_on)
 {
 	return tpcompactkbd_send_cmd(hdev, 0x05, fn_lock_on ? 0x01 : 0x00);
 }
