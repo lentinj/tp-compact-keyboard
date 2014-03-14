@@ -18,16 +18,21 @@ Then build:
 
     $ make
 
-
-To use it, first connect the keybaord then bind the driver to it:
+To test the driver at this point, connect the keyboard and then rebind it to
+the driver:
 
     # insmod hid-lenovo-tpcompactkbd.ko
     # HID_DEVICE=$(basename /sys/bus/hid/drivers/*/0005\:17EF\:6048*)
     # echo -n $HID_DEVICE > /sys/bus/hid/drivers/hid-generic/unbind
     # echo -n $HID_DEVICE > /sys/bus/hid/drivers/lenovo_tpcompactkbd/bind
 
+You can install with:
+
+    # make install
+
 To bind automatically, I think it needs to be listed in hid_have_special_driver,
-but that's not going to work so well with an out-of-tree driver.
+but that's not going to work so well with an out-of-tree driver. You can
+probably bodge it with a udev rule or something.
 
 Notes on creating
 -----------------
