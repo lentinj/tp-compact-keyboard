@@ -15,7 +15,6 @@
 #include <linux/device.h>
 #include <linux/hid.h>
 #include <linux/module.h>
-#include <linux/sysfs.h>
 
 #define USB_VENDOR_ID_LENOVO	0x17ef
 #define USB_DEVICE_ID_CBTKBD	0x6048
@@ -119,34 +118,6 @@ static int tpcompactkbd_set_fnlock(struct hid_device *hdev,
 	return tpcompactkbd_send_cmd(hdev, 0x05, fn_lock_on ? 0x01 : 0x00);
 }
 
-/* Control Fn lock via. sysfs node */
-static ssize_t fn_lock_store(struct device *dev,
-		struct device_attribute *attr,
-		const char *buf,
-		size_t count)
-{
-	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
-	int value;
-
-	if (kstrtoint(buf, 10, &value))
-		return -EINVAL;
-
-	if (tpcompactkbd_set_fnlock(hdev, value == 1))
-		return -EINVAL;
-
-	return count;
-}
-static struct device_attribute dev_attr_fn_lock = __ATTR_WO(fn_lock);
-
-static struct attribute *attributes_pointer[] = {
-	&dev_attr_fn_lock.attr,
-	NULL
-};
-
-static const struct attribute_group tpcompactkbd_attr_group_pointer = {
-	.attrs = attributes_pointer,
-};
-
 static int tpcompactkbd_probe(struct hid_device *hdev,
 			const struct hid_device_id *id)
 {
@@ -173,24 +144,12 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 		hid_warn(hdev, "Failed to switch F7/9/11 into regular keys\n");
 
 	/* Init fnlock node, start with Fn lock on */
-	if (sysfs_create_group(&hdev->dev.kobj,
-				&tpcompactkbd_attr_group_pointer)) {
-		hid_warn(hdev, "Could not create sysfs group\n");
-	}
 	tpcompactkbd_set_fnlock(hdev, 1);
 
 	return 0;
 
 err:
 	return ret;
-}
-
-static void tpcompactkbd_remove(struct hid_device *hdev)
-{
-	sysfs_remove_group(&hdev->dev.kobj,
-			&tpcompactkbd_attr_group_pointer);
-
-	hid_hw_stop(hdev);
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
@@ -205,7 +164,6 @@ static struct hid_driver tpcompactkbd_driver = {
 	.id_table = tpcompactkbd_devices,
 	.input_mapping = tpcompactkbd_input_mapping,
 	.probe = tpcompactkbd_probe,
-	.remove = tpcompactkbd_remove,
 };
 module_hid_driver(tpcompactkbd_driver);
 
