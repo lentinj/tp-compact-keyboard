@@ -21,10 +21,7 @@ Then build:
 To test the driver at this point, connect the keyboard and then rebind it to
 the driver:
 
-    # insmod hid-lenovo-tpcompactkbd.ko
-    # HID_DEVICE=$(basename /sys/bus/hid/drivers/*/0005\:17EF\:6048*)
-    # echo -n $HID_DEVICE > /sys/bus/hid/drivers/hid-generic/unbind
-    # echo -n $HID_DEVICE > /sys/bus/hid/drivers/lenovo_tpcompactkbd/bind
+    # make load
 
 You can install with:
 
@@ -33,6 +30,18 @@ You can install with:
 To bind automatically, I think it needs to be listed in hid_have_special_driver,
 but that's not going to work so well with an out-of-tree driver. You can
 probably bodge it with a udev rule or something.
+
+Fn-lock mode
+------------
+
+There is one kernel parameter, fnmode, that controls the Fn-Lock behaviour.
+
+    0: Default (on, Fn-Esc toggles)
+    1: Permanently on
+    2: Permanently off
+
+This can be toggled at run-time with /sys/module/hid_lenovo_tpcompactkbd/parameters/fnmode
+but you may have to press Fn-Esc for this to take effect.
 
 Notes on creating
 -----------------
