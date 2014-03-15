@@ -119,12 +119,12 @@ static int tpcompactkbd_send_cmd(struct hid_device *hdev,
 						HID_OUTPUT_REPORT);
 }
 
-/* Toggle fnlock on or off */
+/* Toggle fnlock on or off, if fnmode allows */
 static void tpcompactkbd_toggle_fnlock(struct hid_device *hdev)
 {
 	struct tpcompactkbd_sc *tpcsc = hid_get_drvdata(hdev);
 
-	tpcsc->fn_lock = !tpcsc->fn_lock;
+	tpcsc->fn_lock = fnmode == 2 ? 0 : fnmode == 1 ? 1 : !tpcsc->fn_lock;
 	if (tpcompactkbd_send_cmd(hdev, 0x05, tpcsc->fn_lock ? 0x01 : 0x00))
 		hid_err(hdev, "Fn-lock toggle failed\n");
 }
@@ -133,7 +133,7 @@ static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
 	/* Switch fn-lock on fn-esc */
-	if (unlikely(!fnmode && usage->code == KEY_FN_ESC && value))
+	if (unlikely(usage->code == KEY_FN_ESC && value))
 		tpcompactkbd_toggle_fnlock(hdev);
 
 	return 0;
@@ -173,8 +173,8 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 		hid_warn(hdev, "Failed to switch F7/9/11 into regular keys\n");
 
 
-	/* Start with fn_lock oppsite to what we want, then toggle */
-	tpcsc->fn_lock = fnmode == 2 ? 1 : 0;
+	/* Toggle once to init the state of fn-lock */
+	tpcsc->fn_lock = 0;
 	tpcompactkbd_toggle_fnlock(hdev);
 
 	return 0;
