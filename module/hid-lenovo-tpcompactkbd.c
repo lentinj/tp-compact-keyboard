@@ -27,6 +27,26 @@ struct tpcompactkbd_sc {
 	unsigned int fn_lock;
 };
 
+/* Send a config command to the keyboard */
+static int tpcompactkbd_send_cmd(struct hid_device *hdev,
+			unsigned char byte2, unsigned char byte3)
+{
+	unsigned char buf[] = {0x18, byte2, byte3};
+
+	return hdev->hid_output_raw_report(hdev, buf, sizeof(buf),
+						HID_OUTPUT_REPORT);
+}
+
+/* Toggle fnlock on or off, if fnmode allows */
+static void tpcompactkbd_toggle_fnlock(struct hid_device *hdev)
+{
+	struct tpcompactkbd_sc *tpcsc = hid_get_drvdata(hdev);
+
+	tpcsc->fn_lock = fnmode == 2 ? 0 : fnmode == 1 ? 1 : !tpcsc->fn_lock;
+	if (tpcompactkbd_send_cmd(hdev, 0x05, tpcsc->fn_lock ? 0x01 : 0x00))
+		hid_err(hdev, "Fn-lock toggle failed\n");
+}
+
 /*
  * Keyboard sends non-standard reports for most "hotkey" Fn functions.
  * Map these back to regular keys.
@@ -53,14 +73,6 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_CONSUMER) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		case 0x0070:
-			/* Used before 18 01 03 is sent to keyboard */
-			tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);
-			return 1;
-		case 0x006f:
-			/* Used before 18 01 03 is sent to keyboard */
-			tpckbd_map_key_clear(KEY_BRIGHTNESSUP);
-			return 1;
 		case 0x03f1:
 			tpckbd_map_key_clear(KEY_FN_F8);
 			return 1;
@@ -109,26 +121,6 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	return 0;
 }
 
-/* Send a config command to the keyboard */
-static int tpcompactkbd_send_cmd(struct hid_device *hdev,
-			unsigned char byte2, unsigned char byte3)
-{
-	unsigned char buf[] = {0x18, byte2, byte3};
-
-	return hdev->hid_output_raw_report(hdev, buf, sizeof(buf),
-						HID_OUTPUT_REPORT);
-}
-
-/* Toggle fnlock on or off, if fnmode allows */
-static void tpcompactkbd_toggle_fnlock(struct hid_device *hdev)
-{
-	struct tpcompactkbd_sc *tpcsc = hid_get_drvdata(hdev);
-
-	tpcsc->fn_lock = fnmode == 2 ? 0 : fnmode == 1 ? 1 : !tpcsc->fn_lock;
-	if (tpcompactkbd_send_cmd(hdev, 0x05, tpcsc->fn_lock ? 0x01 : 0x00))
-		hid_err(hdev, "Fn-lock toggle failed\n");
-}
-
 static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
@@ -171,7 +163,6 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 	ret = tpcompactkbd_send_cmd(hdev, 0x01, 0x03);
 	if (ret)
 		hid_warn(hdev, "Failed to switch F7/9/11 into regular keys\n");
-
 
 	/* Toggle once to init the state of fn-lock */
 	tpcsc->fn_lock = 0;
