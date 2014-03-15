@@ -19,6 +19,14 @@
 #define USB_VENDOR_ID_LENOVO	0x17ef
 #define USB_DEVICE_ID_CBTKBD	0x6048
 
+static unsigned int fnmode;
+module_param(fnmode, uint, 0644);
+MODULE_PARM_DESC(fnmode, "Fn lock mode ([0] = normal (Fn Lock toggles), 1 = Permanently on, 2 = Permanently off)");
+
+struct tpcompactkbd_sc {
+	unsigned int fn_lock;
+};
+
 /*
  * Keyboard sends non-standard reports for most "hotkey" Fn functions.
  * Map these back to regular keys.
@@ -111,17 +119,38 @@ static int tpcompactkbd_send_cmd(struct hid_device *hdev,
 						HID_OUTPUT_REPORT);
 }
 
-/* Set fnlock on or off */
-static int tpcompactkbd_set_fnlock(struct hid_device *hdev,
-			unsigned char fn_lock_on)
+/* Toggle fnlock on or off */
+static void tpcompactkbd_toggle_fnlock(struct hid_device *hdev)
 {
-	return tpcompactkbd_send_cmd(hdev, 0x05, fn_lock_on ? 0x01 : 0x00);
+	struct tpcompactkbd_sc *tpcsc = hid_get_drvdata(hdev);
+
+	tpcsc->fn_lock = !tpcsc->fn_lock;
+	if (tpcompactkbd_send_cmd(hdev, 0x05, tpcsc->fn_lock ? 0x01 : 0x00))
+		hid_err(hdev, "Fn-lock toggle failed\n");
+}
+
+static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
+		struct hid_usage *usage, __s32 value)
+{
+	/* Switch fn-lock on fn-esc */
+	if (unlikely(!fnmode && usage->code == KEY_FN_ESC && value))
+		tpcompactkbd_toggle_fnlock(hdev);
+
+	return 0;
 }
 
 static int tpcompactkbd_probe(struct hid_device *hdev,
 			const struct hid_device_id *id)
 {
 	int ret;
+	struct tpcompactkbd_sc *tpcsc;
+
+	tpcsc = devm_kzalloc(&hdev->dev, sizeof(*tpcsc), GFP_KERNEL);
+	if (tpcsc == NULL) {
+		hid_err(hdev, "can't alloc keyboard descriptor\n");
+		return -ENOMEM;
+	}
+	hid_set_drvdata(hdev, tpcsc);
 
 	ret = hid_parse(hdev);
 	if (ret) {
@@ -143,8 +172,10 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 	if (ret)
 		hid_warn(hdev, "Failed to switch F7/9/11 into regular keys\n");
 
-	/* Init fnlock node, start with Fn lock on */
-	tpcompactkbd_set_fnlock(hdev, 1);
+
+	/* Start with fn_lock oppsite to what we want, then toggle */
+	tpcsc->fn_lock = fnmode == 2 ? 1 : 0;
+	tpcompactkbd_toggle_fnlock(hdev);
 
 	return 0;
 
@@ -164,6 +195,7 @@ static struct hid_driver tpcompactkbd_driver = {
 	.id_table = tpcompactkbd_devices,
 	.input_mapping = tpcompactkbd_input_mapping,
 	.probe = tpcompactkbd_probe,
+	.event = tpcompactkbd_event,
 };
 module_hid_driver(tpcompactkbd_driver);
 
