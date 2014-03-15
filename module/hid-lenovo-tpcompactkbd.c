@@ -155,13 +155,13 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 	ret = hid_parse(hdev);
 	if (ret) {
 		hid_err(hdev, "hid_parse failed\n");
-		goto err;
+		return ret;
 	}
 
 	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
 	if (ret) {
 		hid_err(hdev, "hid_hw_start failed\n");
-		goto err;
+		return ret;
 	}
 
 	/*
@@ -178,9 +178,6 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 	tpcompactkbd_toggle_fnlock(hdev);
 
 	return 0;
-
-err:
-	return ret;
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
