@@ -4,8 +4,7 @@ hid-lenovo-tpcompactkbd kernel module
 A module to handle the quirks of the keyboard transparently. This will:-
 
 * Map all special functions to something useful
-* Enable Fn-Lock
-* Allow enabling / disabling fn-lock via. sysfs
+* Enable Fn-Lock, and allow Fn-Esc to toggle
 
 Ideally at some point this will be included with the Linux kernel, but until it
 is you'll have to build it yourself.
@@ -42,6 +41,9 @@ There is one kernel parameter, fnmode, that controls the Fn-Lock behaviour.
 
 This can be toggled at run-time with /sys/module/hid_lenovo_tpcompactkbd/parameters/fnmode
 but you may have to press Fn-Esc for this to take effect.
+
+Also, if you map Fn-Esc to something other than KEY_FN_ESC, toggling will not
+work.
 
 Notes on creating
 -----------------
