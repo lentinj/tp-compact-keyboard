@@ -12,7 +12,7 @@ load:: hid-lenovo-tpcompactkbd.ko
 	date > /dev/kmsg
 	rmmod hid-lenovo-tpcompactkbd
 	insmod hid-lenovo-tpcompactkbd.ko
-	for f in /sys/bus/hid/drivers/*; do [ -e "$$f/$(HID_DEVICE)" ] && echo -n "$(HID_DEVICE)" > $$f/unbind; done
+	for f in /sys/bus/hid/drivers/*; do [ -e "$$f/$(HID_DEVICE)" ] && echo -n "$(HID_DEVICE)" > $$f/unbind || true; done
 	echo "Binding to $(HID_DEVICE)"
 	echo -n "$(HID_DEVICE)" > /sys/bus/hid/drivers/lenovo_tpcompactkbd/bind
 	dmesg | tail
