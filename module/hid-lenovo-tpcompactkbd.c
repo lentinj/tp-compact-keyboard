@@ -17,7 +17,7 @@
 #include <linux/module.h>
 
 #define USB_VENDOR_ID_LENOVO	0x17ef
-#define USB_DEVICE_ID_CBTKBD	0x6048
+#define USB_DEVICE_ID_LENOVO_CBTKBD	0x6048
 
 static unsigned int fnmode;
 module_param(fnmode, uint, 0644);
@@ -172,7 +172,7 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
-	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_CBTKBD) },
+	{HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CBTKBD)},
 
 	{ }
 };
