@@ -47,6 +47,25 @@ though. To do this, do the following as root:
 
 Then udev will enable Fn-lock every time the keyboard is connected.
 
+### Other options
+
+There are a few other options, however they are useless without a custom kernel
+module handling the keyboard:
+
+    --native-fn-enable
+    	By default, F7/F9/F11 generate a string of keypresses that might be
+    	useful under windows. This stops this, and instead only generates
+    	custom events.
+    --native-mouse-enable
+        The middle button generates 2 events by default, but Linux only
+        understands one of them. This disables the event that Linux does
+        understand, leaving you with no middle button.
+    --native-mouse-disable
+        Restore middle button to a working state.
+
+Pair/unpair isn't enough to reset the keyboard, you need to power down the
+keyboard to get it back to it's original state.
+
 How I did it
 ------------
 
