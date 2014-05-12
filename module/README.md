@@ -11,7 +11,7 @@ is you'll have to build it yourself.
 
 Ensure kernel headers are installed:
 
-    # apt-get install kernel-headers-$(uname -r)
+    # apt-get install linux-headers-$(uname -r)
 
 Then build:
 
