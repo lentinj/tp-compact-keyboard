@@ -166,9 +166,12 @@ static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
 	/* Switch fn-lock on fn-esc */
+/* TODO: Causes an oops for the USB keyboard
 	if (unlikely(usage->code == KEY_FN_ESC && value))
 		tpcompactkbd_toggle_fnlock(hdev);
 
+*/
+	/* TODO: USB: Ignore extra keys pressed with Fn-F12 */
 	return 0;
 }
 
@@ -196,6 +199,7 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 		hid_err(hdev, "hid_hw_start failed\n");
 		return ret;
 	}
+	/*TODO: Will probably need to ignore the keyboard half of USB keyboard */
 
 	/*
 	 * Tell the keyboard a driver understands it, and turn F7, F9, F11 into

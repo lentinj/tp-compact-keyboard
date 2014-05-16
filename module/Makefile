@@ -1,8 +1,8 @@
 obj-m += hid-lenovo-tpcompactkbd.o
 # USB:-
-# HID_DEVICE := $(shell basename -a /sys/bus/hid/drivers/*/0003\:17EF\:6047* | tail -1)
+HID_DEVICE := $(shell basename -a /sys/bus/hid/drivers/*/0003\:17EF\:6047* | tail -1)
 # Bluetooth:-
-HID_DEVICE := $(shell basename /sys/bus/hid/drivers/*/0005\:17EF\:6048*)
+# HID_DEVICE := $(shell basename /sys/bus/hid/drivers/*/0005\:17EF\:6048*)
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
