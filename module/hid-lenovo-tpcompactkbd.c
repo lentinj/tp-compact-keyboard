@@ -19,7 +19,7 @@
 #define USB_VENDOR_ID_LENOVO	0x17ef
 #define USB_DEVICE_ID_LENOVO_CUSBKBD	0x6047
 #define USB_DEVICE_ID_LENOVO_CBTKBD		0x6048
-#devine HID_UP_LNVENDOR	0xffa00000
+#define HID_UP_LNVENDOR	0xffa00000
 
 static unsigned int fnmode;
 module_param(fnmode, uint, 0644);
