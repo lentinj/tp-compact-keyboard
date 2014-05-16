@@ -17,7 +17,9 @@
 #include <linux/module.h>
 
 #define USB_VENDOR_ID_LENOVO	0x17ef
-#define USB_DEVICE_ID_LENOVO_CBTKBD	0x6048
+#define USB_DEVICE_ID_LENOVO_CUSBKBD	0x6047
+#define USB_DEVICE_ID_LENOVO_CBTKBD		0x6048
+#devine HID_UP_LNVENDOR	0xffa00000
 
 static unsigned int fnmode;
 module_param(fnmode, uint, 0644);
@@ -31,10 +33,18 @@ struct tpcompactkbd_sc {
 static int tpcompactkbd_send_cmd(struct hid_device *hdev,
 			unsigned char byte2, unsigned char byte3)
 {
+	int ret;
 	unsigned char buf[] = {0x18, byte2, byte3};
+	unsigned char report_type = HID_OUTPUT_REPORT;
 
-	return hdev->hid_output_raw_report(hdev, buf, sizeof(buf),
-						HID_OUTPUT_REPORT);
+	/* The USB keyboard accepts commands via SET_FEATURE */
+	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD) {
+		buf[0] = 0x13;
+		report_type = HID_FEATURE_REPORT;
+	}
+
+	ret = hdev->hid_output_raw_report(hdev, buf, sizeof(buf), report_type);
+	return ret < 0 ? ret : 0; /* BT returns 0, USB returns sizeof(buf) */
 }
 
 /* Toggle fnlock on or off, if fnmode allows */
@@ -47,39 +57,61 @@ static void tpcompactkbd_toggle_fnlock(struct hid_device *hdev)
 		hid_err(hdev, "Fn-lock toggle failed\n");
 }
 
-/*
- * Keyboard sends non-standard reports for most "hotkey" Fn functions.
- * Map these back to regular keys.
- *
- * Esc:	KEY_FN_ESC		FnLock
- * (F1--F3 are regular keys)
- * F4:	KEY_MICMUTE		Mic Mute
- * F5:	KEY_BRIGHTNESSDOWN	Brightness down
- * F6:	KEY_BRIGHTNESSUP	Brightness up
- * F7:	KEY_SWITCHVIDEOMODE	External display (projector)
- * F8:	KEY_FN_F8		Wireless
- * F9:	KEY_CONFIG		Control panel / settings
- * F10:	KEY_SEARCH		Search
- * F11:	KEY_FN_F11		View open applications (3 boxes)
- * F12:	KEY_FN_F12		Open My computer (6 boxes)
- */
-
 #define tpckbd_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
 					EV_KEY, (c))
-static int tpcompactkbd_input_mapping(struct hid_device *hdev,
+static int tpcompactkbd_usb_input_mapping(struct hid_device *hdev,
+		struct hid_input *hi, struct hid_field *field,
+		struct hid_usage *usage, unsigned long **bit, int *max)
+{
+	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_LNVENDOR) {
+		set_bit(EV_REP, hi->input->evbit);
+		switch (usage->hid & HID_USAGE) {
+		case 0xfa: /* Fn-Esc: Fn-lock toggle */
+			tpckbd_map_key_clear(KEY_FN_ESC);
+			return 1;
+		case 0xf1: /* Fn-F4: Mic mute */
+			tpckbd_map_key_clear(KEY_MICMUTE);
+			return 1;
+		case 0xf2: /* Fn-F5: Brightness down */
+			tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);
+			return 1;
+		case 0xf3: /* Fn-F6: Brightness up */
+			tpckbd_map_key_clear(KEY_BRIGHTNESSUP);
+			return 1;
+		case 0xf4: /* Fn-F7: External display (projector) */
+			tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);
+			return 1;
+		case 0xf5: /* Fn-F8: Wireless */
+			tpckbd_map_key_clear(KEY_WLAN);
+			return 1;
+		case 0xf6: /* Fn-F9: Control panel */
+			tpckbd_map_key_clear(KEY_CONFIG);
+			return 1;
+		case 0xf8: /* Fn-F11: View open applications (3 boxes)*/
+			tpckbd_map_key_clear(KEY_FN_F11);
+			return 1;
+		case 0xf9: /* Fn-F12: Open My computer (6 boxes)*/
+			tpckbd_map_key_clear(KEY_FN_F12);
+			return 1;
+		}
+	}
+
+	return 0;
+}
+static int tpcompactkbd_bt_input_mapping(struct hid_device *hdev,
 		struct hid_input *hi, struct hid_field *field,
 		struct hid_usage *usage, unsigned long **bit, int *max)
 {
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_CONSUMER) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		case 0x03f1:
-			tpckbd_map_key_clear(KEY_FN_F8);
+		case 0x03f1: /* Fn-F8: Wireless */
+			tpckbd_map_key_clear(KEY_WLAN);
 			return 1;
-		case 0x0221:
+		case 0x0221: /* Fn-F10: Search */
 			tpckbd_map_key_clear(KEY_SEARCH);
 			return 1;
-		case 0x03f2:
+		case 0x03f2: /* Fn-F12: Open My computer (6 boxes) */
 			tpckbd_map_key_clear(KEY_FN_F12);
 			return 1;
 		}
@@ -88,37 +120,46 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		case 0x00f0:
+		case 0x00f0: /* Fn-Esc: Fn-lock toggle */
 			tpckbd_map_key_clear(KEY_FN_ESC);
 			return 1;
-		case 0x00f1:
+		case 0x00f1: /* Fn-F4: Mic mute */
 			tpckbd_map_key_clear(KEY_MICMUTE);
 			return 1;
-		case 0x00f2:
+		case 0x00f2: /* Fn-F5: Brightness down */
 			tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);
 			return 1;
-		case 0x00f3:
+		case 0x00f3: /* Fn-F6: Brightness up */
 			tpckbd_map_key_clear(KEY_BRIGHTNESSUP);
 			return 1;
-		case 0x00f4:
+		case 0x00f4: /* Fn-F7: External display (projector) */
 			tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);
 			return 1;
-		case 0x00f5:
-			tpckbd_map_key_clear(KEY_FN_F8);
+		case 0x00f5: /* Fn-F8: Wireless */
+			tpckbd_map_key_clear(KEY_WLAN);
 			return 1;
-		case 0x00f6:
+		case 0x00f6: /* Fn-F9: Control panel */
 			tpckbd_map_key_clear(KEY_CONFIG);
 			return 1;
-		case 0x00f8:
+		case 0x00f8: /* Fn-F11: View open applications (3 boxes) */
 			tpckbd_map_key_clear(KEY_FN_F11);
 			return 1;
-		case 0x00fa:
+		case 0x00fa: /* Fn-Esc: Fn-lock toggle */
 			tpckbd_map_key_clear(KEY_FN_ESC);
 			return 1;
 		}
 	}
 
 	return 0;
+}
+static int tpcompactkbd_input_mapping(struct hid_device *hdev,
+		struct hid_input *hi, struct hid_field *field,
+		struct hid_usage *usage, unsigned long **bit, int *max)
+{
+	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD)
+		return tpcompactkbd_usb_input_mapping(hdev, hi, field,
+						usage, bit, max);
+	return tpcompactkbd_bt_input_mapping(hdev, hi, field, usage, bit, max);
 }
 
 static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
@@ -172,6 +213,7 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
+	{HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CUSBKBD)},
 	{HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CBTKBD)},
 
 	{ }
