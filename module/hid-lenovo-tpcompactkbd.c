@@ -165,6 +165,10 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
+	if (!(hdev->claimed & HID_CLAIMED_INPUT) || !field->hidinput ||
+			!usage->type)
+		return 0;
+
 	/* Switch fn-lock on fn-esc */
 /* TODO: Causes an oops for the USB keyboard
 	if (unlikely(usage->code == KEY_FN_ESC && value))
