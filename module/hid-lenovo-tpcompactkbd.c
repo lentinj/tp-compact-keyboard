@@ -59,46 +59,7 @@ static void tpcompactkbd_toggle_fnlock(struct hid_device *hdev)
 
 #define tpckbd_map_key_clear(c)	hid_map_usage_clear(hi, usage, bit, max, \
 					EV_KEY, (c))
-static int tpcompactkbd_usb_input_mapping(struct hid_device *hdev,
-		struct hid_input *hi, struct hid_field *field,
-		struct hid_usage *usage, unsigned long **bit, int *max)
-{
-	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_LNVENDOR) {
-		set_bit(EV_REP, hi->input->evbit);
-		switch (usage->hid & HID_USAGE) {
-		case 0xfa: /* Fn-Esc: Fn-lock toggle */
-			tpckbd_map_key_clear(KEY_FN_ESC);
-			return 1;
-		case 0xf1: /* Fn-F4: Mic mute */
-			tpckbd_map_key_clear(KEY_MICMUTE);
-			return 1;
-		case 0xf2: /* Fn-F5: Brightness down */
-			tpckbd_map_key_clear(KEY_BRIGHTNESSDOWN);
-			return 1;
-		case 0xf3: /* Fn-F6: Brightness up */
-			tpckbd_map_key_clear(KEY_BRIGHTNESSUP);
-			return 1;
-		case 0xf4: /* Fn-F7: External display (projector) */
-			tpckbd_map_key_clear(KEY_SWITCHVIDEOMODE);
-			return 1;
-		case 0xf5: /* Fn-F8: Wireless */
-			tpckbd_map_key_clear(KEY_WLAN);
-			return 1;
-		case 0xf6: /* Fn-F9: Control panel */
-			tpckbd_map_key_clear(KEY_CONFIG);
-			return 1;
-		case 0xf8: /* Fn-F11: View open applications (3 boxes)*/
-			tpckbd_map_key_clear(KEY_FN_F11);
-			return 1;
-		case 0xf9: /* Fn-F12: Open My computer (6 boxes)*/
-			tpckbd_map_key_clear(KEY_FN_F12);
-			return 1;
-		}
-	}
-
-	return 0;
-}
-static int tpcompactkbd_bt_input_mapping(struct hid_device *hdev,
+static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 		struct hid_input *hi, struct hid_field *field,
 		struct hid_usage *usage, unsigned long **bit, int *max)
 {
@@ -114,7 +75,9 @@ static int tpcompactkbd_bt_input_mapping(struct hid_device *hdev,
 		}
 	}
 
-	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
+	/* HID_LN_MSVENDOR = USB, HID_UP_MSVENDOR = BT */
+	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR ||
+	    (usage->hid & HID_USAGE_PAGE) == HID_UP_LNVENDOR) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
 		case 0x00f1: /* Fn-F4: Mic mute */
@@ -141,21 +104,35 @@ static int tpcompactkbd_bt_input_mapping(struct hid_device *hdev,
 		case 0x00fa: /* Fn-Esc: Fn-lock toggle */
 			tpckbd_map_key_clear(KEY_FN_ESC);
 			return 1;
+		case 0x00fb: /* Fn-F12: Open My computer (6 boxes) USB-only */
+			/* NB: This mapping is invented in raw_event below */
+			tpckbd_map_key_clear(KEY_FN_F12);
+			return 1;
 		}
 	}
 
 	return 0;
 }
-static int tpcompactkbd_input_mapping(struct hid_device *hdev,
-		struct hid_input *hi, struct hid_field *field,
-		struct hid_usage *usage, unsigned long **bit, int *max)
-{
-	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD)
-		return tpcompactkbd_usb_input_mapping(hdev, hi, field,
-						usage, bit, max);
-	return tpcompactkbd_bt_input_mapping(hdev, hi, field, usage, bit, max);
-}
 
+static int tpcompactkbd_raw_event(struct hid_device *hdev, struct hid_report *report,
+			u8 *data, int size)
+{
+	/*
+	 * USB keyboard's Fn-F12 report holds down many other keys, and it's
+	 * own key is outside the usage page range. Remove extra keypresses and
+	 * remap to inside usage page.
+	 */
+	/*TODO: Anything else we should be checking? */
+	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD
+			&& data[0] == 0x15
+			&& data[1] == 0x94
+			&& data[2] == 0x01) {
+		data[1] = 0x0;
+		data[2] = 0x4;
+	}
+
+	return 0;
+}
 static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 		struct hid_usage *usage, __s32 value)
 {
@@ -169,7 +146,6 @@ static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 		tpcompactkbd_toggle_fnlock(hdev);
 
 */
-	/* TODO: USB: Ignore extra keys pressed with Fn-F12 */
 	return 0;
 }
 
@@ -228,6 +204,7 @@ static struct hid_driver tpcompactkbd_driver = {
 	.input_mapping = tpcompactkbd_input_mapping,
 	.probe = tpcompactkbd_probe,
 	.event = tpcompactkbd_event,
+	.raw_event = tpcompactkbd_raw_event,
 };
 module_hid_driver(tpcompactkbd_driver);
 
