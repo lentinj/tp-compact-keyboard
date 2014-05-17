@@ -105,9 +105,6 @@ static int tpcompactkbd_bt_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_CONSUMER) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		case 0x03f1: /* Fn-F8: Wireless */
-			tpckbd_map_key_clear(KEY_WLAN);
-			return 1;
 		case 0x0221: /* Fn-F10: Search */
 			tpckbd_map_key_clear(KEY_SEARCH);
 			return 1;
@@ -120,9 +117,6 @@ static int tpcompactkbd_bt_input_mapping(struct hid_device *hdev,
 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR) {
 		set_bit(EV_REP, hi->input->evbit);
 		switch (usage->hid & HID_USAGE) {
-		case 0x00f0: /* Fn-Esc: Fn-lock toggle */
-			tpckbd_map_key_clear(KEY_FN_ESC);
-			return 1;
 		case 0x00f1: /* Fn-F4: Mic mute */
 			tpckbd_map_key_clear(KEY_MICMUTE);
 			return 1;
