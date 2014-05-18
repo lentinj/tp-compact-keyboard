@@ -122,8 +122,8 @@ static int tpcompactkbd_raw_event(struct hid_device *hdev, struct hid_report *re
 	 * own key is outside the usage page range. Remove extra keypresses and
 	 * remap to inside usage page.
 	 */
-	/*TODO: Anything else we should be checking? */
 	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD
+			&& size == 3
 			&& data[0] == 0x15
 			&& data[1] == 0x94
 			&& data[2] == 0x01) {
