@@ -1,15 +1,17 @@
-Fn-Lock switcher for ThinkPad Compact Bluetooth Keyboard with TrackPoint
-========================================================================
+Fn-Lock switcher for ThinkPad Compact Bluetooth/USB Keyboard with TrackPoint
+============================================================================
 
-The Lenovo Thinkpad compact bluetooth keyboard is a repackaging of a Thinkpad
-laptop keyboard into a bluetooth keyboard case. Unfortunately Lenovo had
+The Lenovo Thinkpad compact keyboard is a repackaging of a Thinkpad
+laptop keyboard into a keyboard case. Unfortunately Lenovo had
 already started their bizzare process of throwing away keys at this point, and
 the Fn-keys have been replaced with some random functions Lenovo thought more
 useful. The Fn-Lock switching is handled by the windows drivers, and
-unfortunately is off by default.
+unfortunately is off by default on the bluetooth keyboard.
 
-There is also a physically-identical USB version of this keyboard. I'm guessing
-that a lot of this would apply here too, but I do not have one to test.
+There are 2 physically identical versions of this keyboard, one with a
+Bluetooth interface, one USB. The USB keyboard I have feels less springy than
+the Bluetooth keyboard, but that's likely to be a different batch than anything
+else.
 
 Paring
 ------
@@ -42,8 +44,8 @@ into the keyboard and press enter. You should have paired. Finally:
 Kernel module
 -------------
 
-I have written a HID driver to cope with the keyboard's quirks. It enables
-fn-lock by default and allows you to toggle via. sysfs.
+I have written a Linux HID driver to cope with both the USB and the Bluetooth
+keyboard. It enables Fn-Lock by default and allows you to toggle via. sysfs.
 
 For more information, see the module directory.
 
@@ -52,6 +54,11 @@ tp-compact-keyboard
 
 If you don't want to install the kernel module, you can use the
 tp-compact-keyboard script to at least enable fn-lock.
+
+This script only works with the Bluetooth version of the keyboard. The USB
+version switches Fn-Lock in a slightly different way, which isn't quite as easy
+to script. However, since Fn-Lock is already enabled, you probably don't care
+so much.
 
 ### Requirements
 
