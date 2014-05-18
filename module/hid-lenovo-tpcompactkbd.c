@@ -168,12 +168,18 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 		return ret;
 	}
 
+	/* All the custom action happens on the mouse device for USB */
+	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD
+			&& hdev->type != HID_TYPE_USBMOUSE) {
+		pr_debug("Ignoring keyboard half of device\n");
+		return -ENODEV;
+	}
+
 	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
 	if (ret) {
 		hid_err(hdev, "hid_hw_start failed\n");
 		return ret;
 	}
-	/*TODO: Will probably need to ignore the keyboard half of USB keyboard */
 
 	/*
 	 * Tell the keyboard a driver understands it, and turn F7, F9, F11 into
