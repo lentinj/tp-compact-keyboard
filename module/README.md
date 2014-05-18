@@ -1,7 +1,8 @@
 hid-lenovo-tpcompactkbd kernel module
 =====================================
 
-A module to handle the quirks of the keyboard transparently. This will:-
+A module to handle the quirks of both the USB and the bluetooth keyboards
+transparently. This will:-
 
 * Map all special functions to something useful
 * Enable Fn-Lock, and allow Fn-Esc to toggle
@@ -18,15 +19,16 @@ Then build:
     $ make
 
 To test the driver at this point, connect the keyboard and then rebind it to
-the driver:
+the driver, depending on which keyboard you have:
 
-    # make load
+    # make load INTERFACE=bt
+    # make load INTERFACE=usb
 
 You can install with:
 
     # make install
 
-To bind automatically, I think it needs to be listed in hid_have_special_driver,
+To bind automatically, it needs to be listed in hid_have_special_driver,
 but that's not going to work so well with an out-of-tree driver. You can
 probably bodge it with a udev rule or something.
 
