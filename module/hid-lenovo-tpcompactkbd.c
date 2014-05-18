@@ -140,12 +140,13 @@ static int tpcompactkbd_event(struct hid_device *hdev, struct hid_field *field,
 			!usage->type)
 		return 0;
 
+	/* TODO: Switching Fn-Lock doesn't work with USB keyboard */
+	if (hdev->product == USB_DEVICE_ID_LENOVO_CUSBKBD) return 0;
+
 	/* Switch fn-lock on fn-esc */
-/* TODO: Causes an oops for the USB keyboard
 	if (unlikely(usage->code == KEY_FN_ESC && value))
 		tpcompactkbd_toggle_fnlock(hdev);
 
-*/
 	return 0;
 }
 
