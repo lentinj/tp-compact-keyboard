@@ -114,8 +114,8 @@ static int tpcompactkbd_input_mapping(struct hid_device *hdev,
 	return 0;
 }
 
-static int tpcompactkbd_raw_event(struct hid_device *hdev, struct hid_report *report,
-			u8 *data, int size)
+static int tpcompactkbd_raw_event(struct hid_device *hdev,
+			struct hid_report *report, u8 *data, int size)
 {
 	/*
 	 * USB keyboard's Fn-F12 report holds down many other keys, and it's
@@ -198,8 +198,8 @@ static int tpcompactkbd_probe(struct hid_device *hdev,
 }
 
 static const struct hid_device_id tpcompactkbd_devices[] = {
-	{HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CUSBKBD)},
-	{HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CBTKBD)},
+	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CUSBKBD) },
+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_CBTKBD) },
 
 	{ }
 };
