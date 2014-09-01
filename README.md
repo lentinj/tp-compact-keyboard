@@ -38,6 +38,8 @@ into the keyboard and press enter. You should have paired. Finally:
 
     bluez-test-device trusted 90:7F:61:01:02:03 1
     bluez-test-input connect 90:7F:61:01:02:03
+    
+If this doesn't work for you, try alternative suggestions from [this thread](https://github.com/lentinj/tp-compact-keyboard/issues/6#issuecomment-53252170).
 
 Kernel module
 -------------
