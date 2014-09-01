@@ -42,8 +42,7 @@ In this case, ``123456`` is the PIN you need to enter.
 
 Your next step depends on what userland tools you use.
 
-bluez-test-*
-^^^^^^^^^^^^
+### bluez-test-*
 
 Put the keyboard into discoverable mode by holding down the power button until
 the light starts flashing. Then use ``hcitool scan`` to find out what the
@@ -64,16 +63,14 @@ enter. You should have paired. Finally:
     bluez-test-device trusted 90:7F:61:01:02:03 1
     bluez-test-input connect 90:7F:61:01:02:03
 
-bluetooth-wizard
-^^^^^^^^^^^^^^^^
+### bluetooth-wizard
 
 Select the device (keyboard) and click "Continue", watch for the PIN code in
 the hcidump window, and enter that.
 
 See: https://bugzilla.redhat.com/show_bug.cgi?id=1019287#c3
 
-bluetoothctl
-^^^^^^^^^^^^
+### bluetoothctl
 
 See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
 
