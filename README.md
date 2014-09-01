@@ -11,6 +11,10 @@ unfortunately is off by default on the bluetooth keyboard.
 There is also a physically-identical USB version of this keyboard. Fortunately
 this leaves Fn-Lock on by default, so isn't so annoying under Linux.
 
+Linux 3.17 onwards will support switching Fn-Lock natively, as well as the
+additional function keys on the keyboard. If you are using an earlier kernel
+you can either use ``tp-compact-keyboard`` or patch your kernel, see below.
+
 Paring
 ------
 
@@ -89,6 +93,20 @@ module handling the keyboard:
 
 Pair/unpair isn't enough to reset the keyboard, you need to power down the
 keyboard to get it back to it's original state.
+
+Full kernel support
+-------------------
+
+If you want full access to the hotkeys, you either need to use 3.17 or apply
+the patches in ``kernel-patch`` to your distribution kernel. For information
+on how to do this, see
+
+* https://wiki.debian.org/HowToRebuildAnOfficialDebianKernelPackage
+
+...or a relevant page for your distribution.
+
+Once this is done, you no longer need ``tp-compact-keyboard``, and all the
+hotkeys will work.
 
 How I did it
 ------------
