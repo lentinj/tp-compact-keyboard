@@ -41,19 +41,11 @@ into the keyboard and press enter. You should have paired. Finally:
     
 If this doesn't work for you, try alternative suggestions from [this thread](https://github.com/lentinj/tp-compact-keyboard/issues/6#issuecomment-53252170).
 
-Kernel module
--------------
-
-I have written a HID driver to cope with the keyboard's quirks. It enables
-fn-lock by default and allows you to toggle via. sysfs.
-
-For more information, see the module directory.
-
 tp-compact-keyboard
 -------------------
 
-If you don't want to install the kernel module, you can use the
-tp-compact-keyboard script to at least enable fn-lock.
+This is a small utility to control some features of the keyboard, most
+importantly to enable fn-lock.
 
 ### Requirements
 
