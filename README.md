@@ -1,15 +1,15 @@
-Fn-Lock switcher for ThinkPad Compact Bluetooth Keyboard with TrackPoint
-========================================================================
+Fn-Lock switcher for ThinkPad Compact Keyboards with TrackPoint
+===============================================================
 
-The Lenovo Thinkpad compact bluetooth keyboard is a repackaging of a Thinkpad
+The Lenovo Thinkpad compact keyboard is a repackaging of a Thinkpad
 laptop keyboard into a bluetooth keyboard case. Unfortunately Lenovo had
 already started their bizzare process of throwing away keys at this point, and
 the Fn-keys have been replaced with some random functions Lenovo thought more
 useful. The Fn-Lock switching is handled by the windows drivers, and
-unfortunately is off by default.
+unfortunately is off by default on the bluetooth keyboard.
 
-There is also a physically-identical USB version of this keyboard. I'm guessing
-that a lot of this would apply here too, but I do not have one to test.
+There is also a physically-identical USB version of this keyboard. Fortunately
+this leaves Fn-Lock on by default, so isn't so annoying under Linux.
 
 Paring
 ------
@@ -45,7 +45,9 @@ tp-compact-keyboard
 -------------------
 
 This is a small utility to control some features of the keyboard, most
-importantly to enable fn-lock.
+importantly to enable fn-lock. It only works with the bluetooth keyboard,
+whilst the USB keyboard accepts the same commands but not in the same way,
+so it's not possible to send them via. the hidraw interface.
 
 ### Requirements
 
