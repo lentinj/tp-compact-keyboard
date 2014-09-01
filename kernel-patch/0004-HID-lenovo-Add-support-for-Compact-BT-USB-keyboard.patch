@@ -1,21 +1,3 @@
-From c422fc722f9c2e39bfe261e2a535f4975d146088 Mon Sep 17 00:00:00 2001
-From: Jamie Lentin <jm@lentin.co.uk>
-Date: Wed, 23 Jul 2014 21:34:53 +0100
-Subject: [PATCH 4/4] HID: lenovo: Add support for Compact (BT|USB) keyboard
-
-Add support for both ThinkPad Compact Bluetooth Keyboard with
-TrackPoint and ThinkPad Compact USB Keyboard with TrackPoint.
-
-Signed-off-by: Jamie Lentin <jm@lentin.co.uk>
----
- Documentation/ABI/testing/sysfs-driver-hid-lenovo |  12 ++
- drivers/hid/Kconfig                               |   2 +
- drivers/hid/hid-core.c                            |   2 +
- drivers/hid/hid-ids.h                             |   2 +
- drivers/hid/hid-lenovo.c                          | 208 ++++++++++++++++++++++
- include/linux/hid.h                               |   1 +
- 6 files changed, 227 insertions(+)
-
 diff --git a/Documentation/ABI/testing/sysfs-driver-hid-lenovo b/Documentation/ABI/testing/sysfs-driver-hid-lenovo
 index 57b92cb..53a0725 100644
 --- a/Documentation/ABI/testing/sysfs-driver-hid-lenovo
@@ -409,6 +391,3 @@ index 77632cf..fca74f1 100644
  #define HID_UP_SENSOR		0x00200000
  
  #define HID_USAGE		0x0000ffff
--- 
-2.0.1
-

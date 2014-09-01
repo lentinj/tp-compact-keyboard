@@ -1,18 +1,3 @@
-From 6ac487007918de62a4360f28d4ab7eb65087c0c8 Mon Sep 17 00:00:00 2001
-From: Jamie Lentin <jm@lentin.co.uk>
-Date: Wed, 23 Jul 2014 21:25:04 +0100
-Subject: [PATCH 2/4] HID: lenovo: Prepare support for adding other devices
-
-Ensure all tpkbd specifics are within a postfixed function, the
-main functions for the driver should just switch to the appropriate
-function depending on product ID. Given this, we can add extra devices
-by including extra postfixed functions.
-
-Signed-off-by: Jamie Lentin <jm@lentin.co.uk>
----
- drivers/hid/hid-lenovo.c | 53 ++++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 45 insertions(+), 8 deletions(-)
-
 diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
 index 0320b96..a56b9e7 100644
 --- a/drivers/hid/hid-lenovo.c
@@ -127,6 +112,3 @@ index 0320b96..a56b9e7 100644
  	.probe = lenovo_probe,
  	.remove = lenovo_remove,
  };
--- 
-2.0.1
-
