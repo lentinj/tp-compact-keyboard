@@ -11,6 +11,36 @@ unfortunately is off by default.
 There is also a physically-identical USB version of this keyboard. I'm guessing
 that a lot of this would apply here too, but I do not have one to test.
 
+Paring
+------
+
+Connecting to the keyboard is somewhat quirky, because it's bluez. Firstly you
+can connect without pairing:
+
+    bluez-test-device create 90:7F:61:01:02:03
+    bluez-test-input connect 90:7F:61:01:02:03
+
+However then the keyboard will not reconnect when it wakes up. To do this, you
+need to pair properly. Naively pairing results in "hci0: Cancel Pair Device
+(0x001a) failed: Invalid Parameters (0x0d)". What's going in is the keyboard is
+the one that is specifying the PIN, however bluez doesn't tell you that.
+
+In one window, do:
+
+    hcidump | grep 'User Passkey Notification' -A1
+
+Then in another, do:
+
+    bluez-simple-agent hci0 90:7F:61:01:02:03
+
+You should see the passkey to type in appear in the hcidump window, type it
+into the keyboard and press enter. You should have paired. Finally:
+
+    bluez-test-device trusted 90:7F:61:01:02:03 1
+    bluez-test-input connect 90:7F:61:01:02:03
+    
+If this doesn't work for you, try alternative suggestions from [this thread](https://github.com/lentinj/tp-compact-keyboard/issues/6#issuecomment-53252170).
+
 Kernel module
 -------------
 

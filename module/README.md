@@ -4,28 +4,45 @@ hid-lenovo-tpcompactkbd kernel module
 A module to handle the quirks of the keyboard transparently. This will:-
 
 * Map all special functions to something useful
-* Enable Fn-Lock
-* Allow enabling / disabling fn-lock via. sysfs
+* Enable Fn-Lock, and allow Fn-Esc to toggle
 
 Ideally at some point this will be included with the Linux kernel, but until it
 is you'll have to build it yourself.
 
 Ensure kernel headers are installed:
 
-    # apt-get install kernel-headers-$(uname -r)
+    # apt-get install linux-headers-$(uname -r)
 
 Then build:
 
     $ make
 
-For debugging, first connect the keyboard then bind driver manually:
+To test the driver at this point, connect the keyboard and then rebind it to
+the driver:
 
-    # insmod hid-lenovo-tpcompactkbd.ko
-    # HID_DEVICE=$(basename /sys/bus/hid/drivers/*/0005\:17EF\:6048*)
-    # echo -n $HID_DEVICE > /sys/bus/hid/drivers/hid-generic/unbind
-    # echo -n $HID_DEVICE > /sys/bus/hid/drivers/lenovo_tpcompactkbd/bind
+    # make load
 
-In theory it should bind automatically after installing, but I can't get it to
+You can install with:
+
+    # make install
+
+To bind automatically, I think it needs to be listed in hid_have_special_driver,
+but that's not going to work so well with an out-of-tree driver. You can
+probably bodge it with a udev rule or something.
+
+Fn-lock mode
+------------
+
+There is one kernel parameter, fnmode, that controls the Fn-Lock behaviour.
+
+    0: Default (on, Fn-Esc toggles)
+    1: Permanently on
+    2: Permanently off
+
+This can be toggled at run-time with /sys/module/hid_lenovo_tpcompactkbd/parameters/fnmode
+but you may have to press Fn-Esc for this to take effect.
+
+Also, if you map Fn-Esc to something other than KEY_FN_ESC, toggling will not
 work.
 
 Notes on creating
