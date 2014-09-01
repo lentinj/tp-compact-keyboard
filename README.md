@@ -15,35 +15,67 @@ Linux 3.17 onwards will support switching Fn-Lock natively, as well as the
 additional function keys on the keyboard. If you are using an earlier kernel
 you can either use ``tp-compact-keyboard`` or patch your kernel, see below.
 
-Paring
-------
+Paring bluetooth keyboard
+-------------------------
 
-Connecting to the keyboard is somewhat quirky, because it's bluez. Firstly you
-can connect without pairing:
+Connecting to the keyboard is somewhat quirky. You can connect without pairing,
+and this generally works, e.g. by using ``bluez-test-input connect``. However
+if you do this then the keyboard will not attempt to automatically when you
+next use it. For this to happen, you need to exchange a PIN.
+
+If the host supports it then the keyboard will send a PIN code to the host for
+you to enter, rather than you entering a PIN code on both. Some versions of
+bluez tell the keyboard it supports this approach, however the userland
+doesn't. This means that you won't be told what PIN code to enter.
+
+To get around this, run the following in a separate console before you start
+pairing:
+
+    hcidump -at | grep -i passkey -A1
+
+During the pairing process, you are looking out for lines like:
+
+    > HCI Event: User Passkey Notification (0x3b) plen 10
+    bdaddr 90:7F:61:01:02:03 passkey 123456
+
+In this case, ``123456`` is the PIN you need to enter.
+
+Your next step depends on what userland tools you use.
+
+bluez-test-*
+^^^^^^^^^^^^
+
+Put the keyboard into discoverable mode by holding down the power button until
+the light starts flashing. Then use ``hcitool scan`` to find out what the
+address of your keyboard is. It should resemble ``90:7F:61:01:02:03``.
+
+Firstly, create the device:
 
     bluez-test-device create 90:7F:61:01:02:03
-    bluez-test-input connect 90:7F:61:01:02:03
 
-However then the keyboard will not reconnect when it wakes up. To do this, you
-need to pair properly. Naively pairing results in "hci0: Cancel Pair Device
-(0x001a) failed: Invalid Parameters (0x0d)". What's going in is the keyboard is
-the one that is specifying the PIN, however bluez doesn't tell you that.
-
-In one window, do:
-
-    hcidump | grep 'User Passkey Notification' -A1
-
-Then in another, do:
+Then start trying to pair:
 
     bluez-simple-agent hci0 90:7F:61:01:02:03
 
-You should see the passkey to type in appear in the hcidump window, type it
-into the keyboard and press enter. You should have paired. Finally:
+You should see the passkey to type in appear in the hcidump window, type it at
+the prompt (using a keyboard already connected to your computer) and press
+enter. You should have paired. Finally:
 
     bluez-test-device trusted 90:7F:61:01:02:03 1
     bluez-test-input connect 90:7F:61:01:02:03
-    
-If this doesn't work for you, try alternative suggestions from [this thread](https://github.com/lentinj/tp-compact-keyboard/issues/6#issuecomment-53252170).
+
+bluetooth-wizard
+^^^^^^^^^^^^^^^^
+
+Select the device (keyboard) and click "Continue", watch for the PIN code in
+the hcidump window, and enter that.
+
+See: https://bugzilla.redhat.com/show_bug.cgi?id=1019287#c3
+
+bluetoothctl
+^^^^^^^^^^^^
+
+See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
 
 tp-compact-keyboard
 -------------------
