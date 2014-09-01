@@ -1,0 +1,36 @@
+From: Jamie Lentin <jm@lentin.co.uk>
+Subject: [PATCH 3/4] HID: lenovo: Style fixes
+
+Signed-off-by: Jamie Lentin <jm@lentin.co.uk>
+---
+ drivers/hid/hid-lenovo.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
+index a56b9e7..f96bf09 100644
+--- a/drivers/hid/hid-lenovo.c
++++ b/drivers/hid/hid-lenovo.c
+@@ -350,6 +350,7 @@ static int lenovo_probe_tpkbd(struct hid_device *hdev)
+ 	size_t name_sz = strlen(dev_name(dev)) + 16;
+ 	char *name_mute, *name_micmute;
+ 	int i;
++	int ret;
+ 
+ 	/*
+ 	 * Only register extra settings against subdevice where input_mapping
+@@ -368,10 +369,9 @@ static int lenovo_probe_tpkbd(struct hid_device *hdev)
+ 	if (!hid_validate_values(hdev, HID_OUTPUT_REPORT, 3, 0, 2))
+ 		return -ENODEV;
+ 
+-	if (sysfs_create_group(&hdev->dev.kobj,
+-				&lenovo_attr_group_tpkbd)) {
+-		hid_warn(hdev, "Could not create sysfs group\n");
+-	}
++	ret = sysfs_create_group(&hdev->dev.kobj, &lenovo_attr_group_tpkbd);
++	if (ret)
++		hid_warn(hdev, "Could not create sysfs group: %d\n", ret);
+ 
+ 	data_pointer = devm_kzalloc(&hdev->dev,
+ 				    sizeof(struct lenovo_drvdata_tpkbd),
+-- 
+2.0.0

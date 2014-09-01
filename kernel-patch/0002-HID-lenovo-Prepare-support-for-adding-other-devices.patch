@@ -1,0 +1,132 @@
+From 6ac487007918de62a4360f28d4ab7eb65087c0c8 Mon Sep 17 00:00:00 2001
+From: Jamie Lentin <jm@lentin.co.uk>
+Date: Wed, 23 Jul 2014 21:25:04 +0100
+Subject: [PATCH 2/4] HID: lenovo: Prepare support for adding other devices
+
+Ensure all tpkbd specifics are within a postfixed function, the
+main functions for the driver should just switch to the appropriate
+function depending on product ID. Given this, we can add extra devices
+by including extra postfixed functions.
+
+Signed-off-by: Jamie Lentin <jm@lentin.co.uk>
+---
+ drivers/hid/hid-lenovo.c | 53 ++++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 45 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
+index 0320b96..a56b9e7 100644
+--- a/drivers/hid/hid-lenovo.c
++++ b/drivers/hid/hid-lenovo.c
+@@ -1,5 +1,6 @@
+ /*
+- *  HID driver for Lenovo ThinkPad USB Keyboard with TrackPoint
++ *  HID driver for Lenovo:
++ *  - ThinkPad USB Keyboard with TrackPoint (tpkbd)
+  *
+  *  Copyright (c) 2012 Bernhard Seibold
+  */
+@@ -39,7 +40,7 @@ static int lenovo_input_mapping_tpkbd(struct hid_device *hdev,
+ 		struct hid_usage *usage, unsigned long **bit, int *max)
+ {
+ 	if (usage->hid == (HID_UP_BUTTON | 0x0010)) {
+-		/* mark the device as pointer */
++		/* This sub-device contains trackpoint, mark it */
+ 		hid_set_drvdata(hdev, (void *)1);
+ 		map_key_clear(KEY_MICMUTE);
+ 		return 1;
+@@ -47,6 +48,19 @@ static int lenovo_input_mapping_tpkbd(struct hid_device *hdev,
+ 	return 0;
+ }
+ 
++static int lenovo_input_mapping(struct hid_device *hdev,
++		struct hid_input *hi, struct hid_field *field,
++		struct hid_usage *usage, unsigned long **bit, int *max)
++{
++	switch (hdev->product) {
++	case USB_DEVICE_ID_LENOVO_TPKBD:
++		return lenovo_input_mapping_tpkbd(hdev, hi, field,
++							usage, bit, max);
++	default:
++		return 0;
++	}
++}
++
+ #undef map_key_clear
+ 
+ static int lenovo_features_set_tpkbd(struct hid_device *hdev)
+@@ -337,6 +351,15 @@ static int lenovo_probe_tpkbd(struct hid_device *hdev)
+ 	char *name_mute, *name_micmute;
+ 	int i;
+ 
++	/*
++	 * Only register extra settings against subdevice where input_mapping
++	 * set drvdata to 1, i.e. the trackpoint.
++	 */
++	if (!hid_get_drvdata(hdev))
++		return 0;
++
++	hid_set_drvdata(hdev, NULL);
++
+ 	/* Validate required reports. */
+ 	for (i = 0; i < 4; i++) {
+ 		if (!hid_validate_values(hdev, HID_FEATURE_REPORT, 4, i, 1))
+@@ -409,12 +432,16 @@ static int lenovo_probe(struct hid_device *hdev,
+ 		goto err;
+ 	}
+ 
+-	if (hid_get_drvdata(hdev)) {
+-		hid_set_drvdata(hdev, NULL);
++	switch (hdev->product) {
++	case USB_DEVICE_ID_LENOVO_TPKBD:
+ 		ret = lenovo_probe_tpkbd(hdev);
+-		if (ret)
+-			goto err_hid;
++		break;
++	default:
++		ret = 0;
++		break;
+ 	}
++	if (ret)
++		goto err_hid;
+ 
+ 	return 0;
+ err_hid:
+@@ -427,6 +454,13 @@ static void lenovo_remove_tpkbd(struct hid_device *hdev)
+ {
+ 	struct lenovo_drvdata_tpkbd *data_pointer = hid_get_drvdata(hdev);
+ 
++	/*
++	 * Only the trackpoint half of the keyboard has drvdata and stuff that
++	 * needs unregistering.
++	 */
++	if (data_pointer == NULL)
++		return;
++
+ 	sysfs_remove_group(&hdev->dev.kobj,
+ 			&lenovo_attr_group_tpkbd);
+ 
+@@ -438,8 +472,11 @@ static void lenovo_remove_tpkbd(struct hid_device *hdev)
+ 
+ static void lenovo_remove(struct hid_device *hdev)
+ {
+-	if (hid_get_drvdata(hdev))
++	switch (hdev->product) {
++	case USB_DEVICE_ID_LENOVO_TPKBD:
+ 		lenovo_remove_tpkbd(hdev);
++		break;
++	}
+ 
+ 	hid_hw_stop(hdev);
+ }
+@@ -454,7 +491,7 @@ MODULE_DEVICE_TABLE(hid, lenovo_devices);
+ static struct hid_driver lenovo_driver = {
+ 	.name = "lenovo",
+ 	.id_table = lenovo_devices,
+-	.input_mapping = lenovo_input_mapping_tpkbd,
++	.input_mapping = lenovo_input_mapping,
+ 	.probe = lenovo_probe,
+ 	.remove = lenovo_remove,
+ };
+-- 
+2.0.1
+
