@@ -1,5 +1,29 @@
 #!/bin/sh
 
+if [ "$1" = "--help" ]; then
+    cat <<EOF
+Usage: tp-compact-keyboard [OPTION...]
+
+--help
+    Print this help output.
+    
+--native-fn-enable
+    By default, F7/F9/F11 generate a string of keypresses that might be
+    useful under windows. This stops this, and instead only generates
+    custom events.
+    
+--native-mouse-enable
+    The middle button generates 2 events by default, but Linux only
+    understands one of them. This disables the event that Linux does
+    understand, leaving you with no middle button.
+    
+--native-mouse-disable
+    Restore middle button to a working state.
+
+EOF
+    exit 0
+fi
+
 # Find the bluetooth keyboard
 HID_NAME="ThinkPad Compact Bluetooth Keyboard with TrackPoint"
 HIDRAWS=$(grep -l "HID_NAME=$HID_NAME" /sys/class/hidraw/hidraw*/device/uevent | grep -oE 'hidraw[0-9]+')
@@ -30,7 +54,7 @@ for HIDRAW in $HIDRAWS; do
         echo Enabling native mode for middle button for /dev/$HIDRAW...
         /bin/echo -ne "\x18\x09\x01" | dd of=/dev/$HIDRAW 2>/dev/null
     else
-        echo Nothing to do.
+        echo "No actions specified. Run --help to see possible actions."
     fi
 done
 
