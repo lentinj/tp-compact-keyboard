@@ -106,9 +106,12 @@ Then udev will enable Fn-lock every time the keyboard is connected.
 
 ### Other options
 
-There are a few other options, however they are useless without a custom kernel
+There are a few other options, however they are mostly useless without a custom kernel
 module handling the keyboard:
 
+    --sensitivity xx
+        Set sensitivity of trackpoint. xx is hex value 01--09 (although values
+        up to FF work).
     --native-fn-enable
     	By default, F7/F9/F11 generate a string of keypresses that might be
     	useful under windows. This stops this, and instead only generates

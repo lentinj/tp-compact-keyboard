@@ -20,6 +20,10 @@ Usage: tp-compact-keyboard [OPTION...]
 --native-mouse-disable
     Restore middle button to a working state.
 
+--sensitivity xx
+    Set sensitivity of trackpoint. xx is hex value 01--09 (although values
+    up to FF work).
+
 EOF
     exit 0
 fi
@@ -53,6 +57,9 @@ for HIDRAW in $HIDRAWS; do
     elif [ "$1" = "--native-mouse-enable" ]; then
         echo Enabling native mode for middle button for /dev/$HIDRAW...
         /bin/echo -ne "\x18\x09\x01" | dd of=/dev/$HIDRAW 2>/dev/null
+    elif [ "$1" = "--sensitivity" ]; then
+        echo Setting sensitivity for /dev/$HIDRAW to $2...
+        /bin/echo -ne "\x18\x02\x$2" | dd of=/dev/$HIDRAW 2>/dev/null
     else
         echo "No actions specified. Run --help to see possible actions."
     fi
@@ -61,5 +68,5 @@ done
 # All HID DATA packets sent to keyboard on startup
 # 18 01 03 - Make F7/F9/F11 return custom single events, as opposed to strings of keys
 # 18 05 01 - Enable fn-lock
-# 18 02 05 - ?
+# 18 02 05 - Sensitivity, 01--09 in windows, 00--FF works
 # 18 09 01 - Disable middle mouse button's standard response (leave custom one working)
