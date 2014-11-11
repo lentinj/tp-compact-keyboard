@@ -1,0 +1,32 @@
+From 941f424a0e0a370727f8aaaafc2e289aa6187c9d Mon Sep 17 00:00:00 2001
+From: Jamie Lentin <jm@lentin.co.uk>
+Date: Mon, 3 Nov 2014 22:18:59 +0000
+Subject: [PATCH 2/2] HID: lenovo: Don't set EV_REP to avoid repeating mice
+ buttons
+
+On the USB keyboard, the VENDOR hotkeys share the same device as the
+mouse. Setting EV_REP also affects mouse buttons, so leave it off.
+
+The bluetooth keyboard still has autorepeating mouse buttons, as it
+only has one device and is set by the KEYBOARD pages.
+
+Signed-off-by: Jamie Lentin <jm@lentin.co.uk>
+---
+ drivers/hid/hid-lenovo.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-lenovo.c
+index 4716f1e..4c55f4d 100644
+--- a/drivers/hid/hid-lenovo.c
++++ b/drivers/hid/hid-lenovo.c
+@@ -62,7 +62,6 @@ static int lenovo_input_mapping_cptkbd(struct hid_device *hdev,
+ 	/* HID_UP_LNVENDOR = USB, HID_UP_MSVENDOR = BT */
+ 	if ((usage->hid & HID_USAGE_PAGE) == HID_UP_MSVENDOR ||
+ 	    (usage->hid & HID_USAGE_PAGE) == HID_UP_LNVENDOR) {
+-		set_bit(EV_REP, hi->input->evbit);
+ 		switch (usage->hid & HID_USAGE) {
+ 		case 0x00f1: /* Fn-F4: Mic mute */
+ 			map_key_clear(KEY_MICMUTE);
+-- 
+2.1.0
+
