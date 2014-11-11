@@ -4,3 +4,6 @@
 /module/*.tmp_versions
 /module/Module.symvers
 /module/modules.order
+
+/linux
+/*.pcap
