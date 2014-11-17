@@ -93,9 +93,9 @@ Using keyboards, Linux pre 3.17
 
 To use the keyboard in an older kernel, you have one of serveral options:-
 
-# Apply the patches in [kernel-patch](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch) to your distribution's kernel
-# Use an external module, e.g. https://github.com/mithro/tp-compact-keyboard-backport
-# Use the userspace tool, ``tp-compact-keyboard``
+1. Apply the patches in [kernel-patch](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch) to your distribution's kernel
+2. Use an external module, e.g. https://github.com/mithro/tp-compact-keyboard-backport
+3. Use the userspace tool, ``tp-compact-keyboard``
 
 The latter is presented here. ``tp-compact-keyboard`` is a small utility
 to control some features of the keyboard, most
