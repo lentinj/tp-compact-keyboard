@@ -11,10 +11,6 @@ unfortunately is off by default on the bluetooth keyboard.
 There is also a physically-identical USB version of this keyboard. Fortunately
 this leaves Fn-Lock on by default, so isn't so annoying under Linux.
 
-Linux 3.17 onwards will support switching Fn-Lock natively, as well as the
-additional function keys on the keyboard. If you are using an earlier kernel
-you can either use ``tp-compact-keyboard`` or patch your kernel, see below.
-
 Paring bluetooth keyboard
 -------------------------
 
@@ -74,13 +70,38 @@ See: https://bugzilla.redhat.com/show_bug.cgi?id=1019287#c3
 
 See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
 
-tp-compact-keyboard
--------------------
+Using keyboards, Linux 3.17+
+----------------------------
 
-This is a small utility to control some features of the keyboard, most
+Linux kernels 3.17 and above (or any kernel with the [kernel-patch](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch)
+applied) have built in support for the keyboards. This means all keys should
+work out the box, and you can control whether fn_lock is enabled by:
+
+    echo 0 > /sys/bus/hid/devices/*17EF\:604*/fn_lock 
+
+The kernel can't currently switch fn_lock automatically for you, however you
+can use [esekeyd](https://sites.google.com/site/blabdupp/esekeyd) to map
+KEY_FN_ESC to a script such as:
+
+    { grep -q 1 /sys/bus/hid/devices/*17EF\:604*/fn_lock && echo 0 || echo 1; } \
+        > /sys/bus/hid/devices/*17EF\:604*/fn_lock
+
+...to toggle it.
+
+Using keyboards, Linux pre 3.17
+-------------------------------
+
+To use the keyboard in an older kernel, you have one of serveral options:-
+
+# Apply the patches in [kernel-patch](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch) to your distribution's kernel
+# Use an external module, e.g. https://github.com/mithro/tp-compact-keyboard-backport
+# Use the userspace tool, ``tp-compact-keyboard``
+
+The latter is presented here. ``tp-compact-keyboard`` is a small utility
+to control some features of the keyboard, most
 importantly to enable fn-lock. It only works with the bluetooth keyboard,
 whilst the USB keyboard accepts the same commands but not in the same way,
-so it's not possible to send them via. the hidraw interface.
+one has to tweak the hidraw ioctls which (AFAIK) can't be done in a Bash script.
 
 ### Requirements
 
@@ -125,20 +146,6 @@ module handling the keyboard:
 
 Pair/unpair isn't enough to reset the keyboard, you need to power down the
 keyboard to get it back to it's original state.
-
-Full kernel support
--------------------
-
-If you want full access to the hotkeys, you either need to use 3.17 or apply
-the patches in ``kernel-patch`` to your distribution kernel. For information
-on how to do this, see
-
-* https://wiki.debian.org/HowToRebuildAnOfficialDebianKernelPackage
-
-...or a relevant page for your distribution.
-
-Once this is done, you no longer need ``tp-compact-keyboard``, and all the
-hotkeys will work.
 
 How I did it
 ------------
