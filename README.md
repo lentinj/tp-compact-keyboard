@@ -27,7 +27,7 @@ doesn't. This means that you won't be told what PIN code to enter.
 To get around this, run the following in a separate console before you start
 pairing:
 
-    hcidump -at | grep -i passkey -A1
+    sudo hcidump -at | grep -i passkey -A1
 
 During the pairing process, you are looking out for lines like:
 
