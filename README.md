@@ -168,3 +168,11 @@ Then, I let windows use the bluetooth dongle::
 If you capture the whole association process then you should be able to view
 HID packets to/from the keyboard (filter for ``bthid``). The particuarly
 interesting ones here are the ones going to the keyboard.
+
+Disassembling the keyboard
+--------------------------
+
+The topmost part of the keyboard is just clipped on, run something around the
+seam on the underside of the keyboard to release it. The laptop keyboard part
+is stuck to the underside with double-sided tape, fierce enough that keyboard
+removal will probably bend it irreprably.
