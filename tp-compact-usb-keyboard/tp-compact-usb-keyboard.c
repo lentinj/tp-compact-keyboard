@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	send_cmd(fd, 0x01, 0x03);
 
 	/* Enable native middle mouse mode */
-	send_cmd(fd, 0x02, 0x01);
+	send_cmd(fd, 0x09, 0x01);
 
 	/* Fn-lock enable */
 	send_cmd(fd, 0x05, 0x01);
