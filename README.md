@@ -176,3 +176,12 @@ The topmost part of the keyboard is just clipped on, run something around the
 seam on the underside of the keyboard to release it. The laptop keyboard part
 is stuck to the underside with double-sided tape, fierce enough that keyboard
 removal will probably bend it irreprably.
+
+Repair of trackpoint
+--------------------
+
+Some users of the bluetooth keyboard have found that the trackpoint stops
+working, whist the rest of the keyboard is fine. This isn't a software issue,
+apparently the chip that controls the trackpoint isn't correctly soldered down.
+
+See: http://bdm.cc/2016/06/lenovo-bluetooth-keyboard-repairs/
