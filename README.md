@@ -88,6 +88,11 @@ KEY_FN_ESC to a script such as:
 
 ...to toggle it.
 
+Using keyboards, Apple OS X
+---------------------------
+
+There is an equivalent tool written using the cross-platform hidapi library here: https://github.com/unknownzerx/tpkb
+
 Using keyboards, Linux pre 3.17
 -------------------------------
 
