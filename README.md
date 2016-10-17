@@ -14,15 +14,28 @@ this leaves Fn-Lock on by default, so isn't so annoying under Linux.
 Paring bluetooth keyboard
 -------------------------
 
-Connecting to the keyboard is somewhat quirky. You can connect without pairing,
-and this generally works, e.g. by using ``bluez-test-input connect``. However
-if you do this then the keyboard will not attempt to automatically when you
-next use it. For this to happen, you need to exchange a PIN.
+The Bluetooth keyboard uses [BT 2.1 Simple Secure Pairing](https://en.wikipedia.org/wiki/Bluetooth#Pairing_mechanisms),
+which should be supported by modern Linux distributions, the pairing process can be done with several utilities.
 
-If the host supports it then the keyboard will send a PIN code to the host for
-you to enter, rather than you entering a PIN code on both. Some versions of
-bluez tell the keyboard it supports this approach, however the userland
-doesn't. This means that you won't be told what PIN code to enter.
+If your distribution does not support SSP, or you have problems pairing, you can try disabling it with ``hciconfig hci0 sspmode 0``. [See this note on a Logitech keyboard](https://wiki.archlinux.org/index.php/Bluetooth#Logitech_keyboard_does_not_pair).
+
+### bluetoothctl
+
+Pairing can be done with the ``pair`` command.
+
+See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
+
+### bluetooth-wizard
+
+Select the device (keyboard) and click "Continue", watch for the PIN code in
+the hcidump window, and enter that.
+
+See: https://bugzilla.redhat.com/show_bug.cgi?id=1019287#c3
+
+### bluez-test-*
+
+Versions of Bluez that ship with these scripts don't support SSP, so don't report
+the PIN code the keyboard requires you to use.
 
 To get around this, run the following in a separate console before you start
 pairing:
@@ -35,10 +48,6 @@ During the pairing process, you are looking out for lines like:
     bdaddr 90:7F:61:01:02:03 passkey 123456
 
 In this case, ``123456`` is the PIN you need to enter.
-
-Your next step depends on what userland tools you use.
-
-### bluez-test-*
 
 Put the keyboard into discoverable mode by holding down the power button until
 the light starts flashing. Then use ``hcitool scan`` to find out what the
@@ -59,21 +68,10 @@ enter. You should have paired. Finally:
     bluez-test-device trusted 90:7F:61:01:02:03 1
     bluez-test-input connect 90:7F:61:01:02:03
 
-### bluetooth-wizard
-
-Select the device (keyboard) and click "Continue", watch for the PIN code in
-the hcidump window, and enter that.
-
-See: https://bugzilla.redhat.com/show_bug.cgi?id=1019287#c3
-
-### bluetoothctl
-
-See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
-
 Using keyboards, Linux 3.17+
 ----------------------------
 
-Linux kernels 3.17 and above (or any kernel with the [kernel-patch](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch)
+Linux kernels 3.17 and above (or any kernel with the [kernel-patches](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch)
 applied) have built in support for the keyboards. This means all keys should
 work out the box, and you can control whether fn_lock is enabled by:
 
