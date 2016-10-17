@@ -21,7 +21,8 @@ If your distribution does not support SSP, or you have problems pairing, you can
 
 ### bluetoothctl
 
-Pairing can be done with the ``pair`` command.
+Pairing can be done with the ``pair`` command. You should be prompted for the PIN code to type
+as part of the process.
 
 See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
 
