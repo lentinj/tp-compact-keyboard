@@ -1,15 +1,15 @@
-Fn-Lock switcher for ThinkPad Compact Keyboards with TrackPoint
+FnLk switcher for ThinkPad Compact Keyboards with TrackPoint
 ===============================================================
 
 The Lenovo Thinkpad compact keyboard is a repackaging of a Thinkpad
 laptop keyboard into a bluetooth keyboard case. Unfortunately Lenovo had
 already started their bizzare process of throwing away keys at this point, and
 the Fn-keys have been replaced with some random functions Lenovo thought more
-useful. The Fn-Lock switching is handled by the windows drivers, and
+useful. The FnLk switching is handled by the windows drivers, and
 unfortunately is off by default on the bluetooth keyboard.
 
 There is also a physically-identical USB version of this keyboard. Fortunately
-this leaves Fn-Lock on by default, so isn't so annoying under Linux.
+this leaves FnLk on by default, so isn't so annoying under Linux.
 
 Paring bluetooth keyboard
 -------------------------
@@ -103,7 +103,7 @@ To use the keyboard in an older kernel, you have one of serveral options:-
 
 The latter is presented here. ``tp-compact-keyboard`` is a small utility
 to control some features of the keyboard, most
-importantly to enable fn-lock. It only works with the bluetooth keyboard,
+importantly to enable FnLk. It only works with the bluetooth keyboard,
 whilst the USB keyboard accepts the same commands but not in the same way,
 one has to tweak the hidraw ioctls which (AFAIK) can't be done in a Bash script.
 
@@ -115,19 +115,19 @@ don't send the report. Not sure why currently.
 
 ### Using
 
-To enable/disable Fn-Lock, do "./tp-compact-keyboard --fn-lock-disable" or
+To enable/disable FnLk, do "./tp-compact-keyboard --fn-lock-disable" or
 "./tp-compact-keyboard --fn-lock-enable". This will find any bluetooth
 keyboards connected and enable/disable. It has a few other functions too, but
 they're not very useful on their own. Have a look at the source.
 
-I'm assuming what you really want to do is force Fn-Lock on and forget about it
+I'm assuming what you really want to do is force FnLk on and forget about it
 though. To do this, do the following as root:
 
     mkdir /etc/udev/scripts
     cp tp-compact-keyboard /etc/udev/scripts/tp-compact-keyboard
     cp tp-compact-keyboard.rules /etc/udev/rules.d/tp-compact-keyboard.rules
 
-Then udev will enable Fn-lock every time the keyboard is connected.
+Then udev will enable FnLk every time the keyboard is connected.
 
 ### Other options
 
