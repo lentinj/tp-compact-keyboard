@@ -110,7 +110,7 @@ one has to tweak the hidraw ioctls which (AFAIK) can't be done in a Bash script.
 ### Requirements
 
 This was developed under a Debian unstable kernel, 3.12-1-amd64, and has been
-reported to work for at least 3.11. However older kernels (3.6, for example)
+reported to work on kernels as early as 3.10 (CentOS 7). However older kernels (3.6, for example)
 don't send the report. Not sure why currently.
 
 ### Using
