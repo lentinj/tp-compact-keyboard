@@ -76,8 +76,10 @@ enter. You should now be paired. Finally:
     bluez-test-device trusted 90:7F:61:01:02:03 1
     bluez-test-input connect 90:7F:61:01:02:03
 
-Using keyboards, Linux 3.17+
-----------------------------
+Toggling FnLk
+-------------
+
+### Linux 3.17 and Above
 
 Linux kernels 3.17 and above (or any kernel with the [kernel-patches](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch)
 applied) have built in support for the keyboards. This means all keys should
@@ -94,15 +96,13 @@ KEY_FN_ESC to a script such as:
 
 ...to toggle it.
 
-Using keyboards, Apple OS X
----------------------------
+### Apple OS X (MacOS)
 
 [tpkb](https://github.com/unknownzerx/tpkb) is a Mac userland tool
 similar to ``tp-compact-keyboard``. It uses the cross-platform hidapi
 library.
 
-Using keyboards, Linux pre 3.17
--------------------------------
+### Linux Pre-3.17
 
 To use the keyboard in an older kernel, you have one of serveral options:-
 
@@ -116,13 +116,13 @@ importantly to enable FnLk. It works only with the Bluetooth keyboard,
 whilst the USB keyboard accepts the same commands but not in the same way,
 one has to tweak the hidraw ioctls which (AFAIK) can't be done in a Bash script.
 
-### Requirements
+#### Requirements
 
 This was developed under a Debian unstable kernel, 3.12-1-amd64, and has been
 reported to work on kernels as early as 3.10 (CentOS 7). However older kernels (3.6, for example)
 don't send the report; I'm not currently sure why.
 
-### Using
+#### Using
 
 To enable or disable FnLk on all connected ThinkPad Bluetooth
 keyboards, run ``./tp-compact-keyboard --fn-lock-enable`` or
@@ -139,7 +139,7 @@ though. To do this, do the following as root:
 
 Then udev will enable FnLk every time the keyboard is connected.
 
-### Other options
+#### Other options
 
 There are a few other options, however they are mostly useless without a custom kernel
 module handling the keyboard:
