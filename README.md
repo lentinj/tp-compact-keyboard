@@ -1,23 +1,30 @@
 FnLk switcher for ThinkPad Compact Keyboards with TrackPoint
 ===============================================================
 
-The Lenovo Thinkpad compact keyboard is a repackaging of a Thinkpad
-laptop keyboard into a bluetooth keyboard case. Unfortunately Lenovo had
-already started their bizzare process of throwing away keys at this point, and
-the Fn-keys have been replaced with some random functions Lenovo thought more
-useful. The FnLk switching is handled by the windows drivers, and
-unfortunately is off by default on the bluetooth keyboard.
+The Lenovo Thinkpad Compact Keyboard with TrackPoint is a repackaging
+of a Thinkpad laptop keyboard into a stand-alone case with a Bluetooth
+wireless or cabled USB connection to the computer. Following the
+current fashion, Lenovo has made the top row of keys serve two
+purposes, using them for both the traditional Fn keys and for
+"hotkeys" intended to control various functions such as volume and
+screen brightness.
 
-There is also a physically-identical USB version of this keyboard. Fortunately
-this leaves FnLk on by default, so isn't so annoying under Linux.
+Pressing FnLk (Fn+Esc) switches these keys between generating Fn
+keypresses and hotkey keypresses, but this mode change is handled not
+by the keyboard itself but by Lenovo's keyboard driver for Windows.
 
-Paring bluetooth keyboard
--------------------------
+On the Bluetooth version of this keyboard the default mode is to
+generate hotkey keypresses; this package will help you make it
+generate Fn keypresses instead. (The USB keyboard has FnLk set by
+default and so starts out generating Fn keypresses.)
 
-The Bluetooth keyboard uses [BT 2.1 Simple Secure Pairing](https://en.wikipedia.org/wiki/Bluetooth#Pairing_mechanisms),
-which should be supported by modern Linux distributions, the pairing process can be done with several utilities.
+Pairing the Keyboard
+--------------------
 
-If your distribution does not support SSP, or you have problems pairing, you can try disabling it with ``hciconfig hci0 sspmode 0``. [See this note on a Logitech keyboard](https://wiki.archlinux.org/index.php/Bluetooth#Logitech_keyboard_does_not_pair).
+The Bluetooth keyboard uses [BT 2.1 Simple Secure Pairing](https://en.wikipedia.org/wiki/Bluetooth#Pairing_mechanisms) (SSP),
+which should be supported by modern Linux distributions. Several different utilities can be used to pair the keyboard.
+
+If your distribution does not support SSP, or if you have problems pairing with SSP, you can try disabling it with ``hciconfig hci0 sspmode 0``. [See this note on a Logitech keyboard](https://wiki.archlinux.org/index.php/Bluetooth#Logitech_keyboard_does_not_pair).
 
 ### bluetoothctl
 
@@ -28,14 +35,14 @@ See: https://wiki.archlinux.org/index.php/Bluetooth_keyboard#Pairing_process
 
 ### bluetooth-wizard
 
-Select the device (keyboard) and click "Continue", watch for the PIN code in
-the hcidump window, and enter that.
+Select the device (keyboard) and click "Continue". Watch for the PIN code in
+the hcidump window and enter that.
 
 See: https://bugzilla.redhat.com/show_bug.cgi?id=1019287#c3
 
 ### bluez-test-*
 
-Versions of Bluez that ship with these scripts don't support SSP, so don't report
+Versions of Bluez that ship with these scripts don't support SSP and thus don't report
 the PIN code the keyboard requires you to use.
 
 To get around this, run the following in a separate console before you start
@@ -62,9 +69,9 @@ Then start trying to pair:
 
     bluez-simple-agent hci0 90:7F:61:01:02:03
 
-You should see the passkey to type in appear in the hcidump window, type it at
+You should see the passkey appear in the hcidump window. Type that passkey at
 the prompt (using a keyboard already connected to your computer) and press
-enter. You should have paired. Finally:
+enter. You should now be paired. Finally:
 
     bluez-test-device trusted 90:7F:61:01:02:03 1
     bluez-test-input connect 90:7F:61:01:02:03
@@ -90,7 +97,9 @@ KEY_FN_ESC to a script such as:
 Using keyboards, Apple OS X
 ---------------------------
 
-There is an equivalent tool written using the cross-platform hidapi library here: https://github.com/unknownzerx/tpkb
+[tpkb](https://github.com/unknownzerx/tpkb) is a Mac userland tool
+similar to ``tp-compact-keyboard``. It uses the cross-platform hidapi
+library.
 
 Using keyboards, Linux pre 3.17
 -------------------------------
@@ -101,9 +110,9 @@ To use the keyboard in an older kernel, you have one of serveral options:-
 2. Use an external module, e.g. https://github.com/mithro/tp-compact-keyboard-backport
 3. Use the userspace tool, ``tp-compact-keyboard``
 
-The latter is presented here. ``tp-compact-keyboard`` is a small utility
+The last option is presented here. ``tp-compact-keyboard`` is a small utility
 to control some features of the keyboard, most
-importantly to enable FnLk. It only works with the bluetooth keyboard,
+importantly to enable FnLk. It works only with the Bluetooth keyboard,
 whilst the USB keyboard accepts the same commands but not in the same way,
 one has to tweak the hidraw ioctls which (AFAIK) can't be done in a Bash script.
 
@@ -111,14 +120,15 @@ one has to tweak the hidraw ioctls which (AFAIK) can't be done in a Bash script.
 
 This was developed under a Debian unstable kernel, 3.12-1-amd64, and has been
 reported to work on kernels as early as 3.10 (CentOS 7). However older kernels (3.6, for example)
-don't send the report. Not sure why currently.
+don't send the report; I'm not currently sure why.
 
 ### Using
 
-To enable/disable FnLk, do "./tp-compact-keyboard --fn-lock-disable" or
-"./tp-compact-keyboard --fn-lock-enable". This will find any bluetooth
-keyboards connected and enable/disable. It has a few other functions too, but
-they're not very useful on their own. Have a look at the source.
+To enable or disable FnLk on all connected ThinkPad Bluetooth
+keyboards, run ``./tp-compact-keyboard --fn-lock-enable`` or
+``./tp-compact-keyboard --fn-lock-disable``. The program has a few
+other functions as well, but they're not very useful on their own.
+Have a look at the source.
 
 I'm assuming what you really want to do is force FnLk on and forget about it
 though. To do this, do the following as root:
@@ -135,11 +145,11 @@ There are a few other options, however they are mostly useless without a custom 
 module handling the keyboard:
 
     --sensitivity xx
-        Set sensitivity of trackpoint. xx is hex value 01--09 (although values
+        Set sensitivity of TrackPoint. xx is hex value 01--09 (although values
         up to FF work).
     --native-fn-enable
     	By default, F7/F9/F11 generate a string of keypresses that might be
-    	useful under windows. This stops this, and instead only generates
+	useful under Windows. This stops this, and instead only generates
     	custom events.
     --native-mouse-enable
         The middle button generates 2 events by default, but Linux only
@@ -151,21 +161,21 @@ module handling the keyboard:
 Pair/unpair isn't enough to reset the keyboard, you need to power down the
 keyboard to get it back to it's original state.
 
-How I did it
+How I Did It
 ------------
 
-I worked out the custom commands by sniffing what the windows driver did.
-Firstly I set up an XP vm in KVM/QEMU and installed the drivers. Then I
-disconnected the keyboard from my computer, and ensured that my user running
-QEMU could write to the ``/dev/bus/usb`` node associated with my bluetooth
+I worked out the custom commands by sniffing what the Windows driver did.
+First I set up a Windows XP virtual machine in KVM/QEMU and installed the drivers. Then I
+disconnected the keyboard from my computer and ensured that the user running
+QEMU could write to the ``/dev/bus/usb`` node associated with my Bluetooth
 dongle.
 
-Wireshark was readied for capture::
+Wireshark was readied for capture:
 
     # modprobe usbmon
     # wireshark
 
-Then, I let windows use the bluetooth dongle::
+Then, I let Windows use the Bluetooth dongle:
 
     (qemu) usb_add host:0a5c:217f
 
@@ -173,19 +183,20 @@ If you capture the whole association process then you should be able to view
 HID packets to/from the keyboard (filter for ``bthid``). The particuarly
 interesting ones here are the ones going to the keyboard.
 
-Disassembling the keyboard
+Disassembling the Keyboard
 --------------------------
 
-The topmost part of the keyboard is just clipped on, run something around the
-seam on the underside of the keyboard to release it. The laptop keyboard part
-is stuck to the underside with double-sided tape, fierce enough that keyboard
-removal will probably bend it irreprably.
+The upper part of the keyboard case is just clipped on; run something
+around the seam on the underside of the keyboard to release it. The
+keyboard itself is fastened to the lower part of the case with
+double-sided tape. This is fastened strongly enough that attempting to
+detach the keyboard from the case would probably bend it irreprably.
 
-Repair of trackpoint
---------------------
+Repairing the Trackpoint
+------------------------
 
-Some users of the bluetooth keyboard have found that the trackpoint stops
-working, whist the rest of the keyboard is fine. This isn't a software issue,
-apparently the chip that controls the trackpoint isn't correctly soldered down.
+Some users of the Bluetooth keyboard have found that the TrackPoint stops
+working whilst the rest of the keyboard is fine. This isn't a software issue;
+apparently the chip that controls the TrackPoint isn't correctly soldered down.
 
 See: http://bdm.cc/2016/06/lenovo-bluetooth-keyboard-repairs/
