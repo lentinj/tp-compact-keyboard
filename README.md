@@ -104,13 +104,19 @@ library.
 
 ### Linux Pre-3.17
 
-To use the keyboard in an older kernel, you have one of serveral options:-
+To use the keyboard in an older kernel, you have several options. From
+easiest to most difficult they are:
 
-1. Apply the patches in [kernel-patch](https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch) to your distribution's kernel
-2. Use an external module, e.g. https://github.com/mithro/tp-compact-keyboard-backport
-3. Use the userspace tool, ``tp-compact-keyboard``
+1. Use the ``tp-compact-keyboard`` program supplied with this package.
+2. Load a kernel module such as [tp-compact-keyboard-backport](
+   https://github.com/mithro/tp-compact-keyboard-backport).
+3. Apply the patches in [kernel-patch](
+   https://github.com/lentinj/tp-compact-keyboard/tree/master/kernel-patch)
+   to the source code for your kernel and recompile it.
 
-The last option is presented here. ``tp-compact-keyboard`` is a small utility
+We cover only the first option here.
+
+``tp-compact-keyboard`` is a small utility
 to control some features of the keyboard, most
 importantly to enable FnLk. It works only with the Bluetooth keyboard,
 whilst the USB keyboard accepts the same commands but not in the same way,
