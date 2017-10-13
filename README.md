@@ -206,3 +206,8 @@ working whilst the rest of the keyboard is fine. This isn't a software issue;
 apparently the chip that controls the TrackPoint isn't correctly soldered down.
 
 See: http://bdm.cc/2016/06/lenovo-bluetooth-keyboard-repairs/
+
+Replacement trackpoint caps
+---------------------------
+
+The keyboards use the "ThinkPad Low Profile TrackPoint Caps" (FRU 0A33908 for a 10-pack) by default. The original-size will fit also, but stick out more. This is fine for the cat-tongue, but with the others your finger can catch the edge.
