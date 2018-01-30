@@ -195,8 +195,13 @@ Disassembling the Keyboard
 The upper part of the keyboard case is just clipped on; run something
 around the seam on the underside of the keyboard to release it. The
 keyboard itself is fastened to the lower part of the case with
-double-sided tape. This is fastened strongly enough that attempting to
-detach the keyboard from the case would probably bend it irreprably.
+double-sided tape. Very gentle persuasion (probably some heat too)
+removes it.
+
+The keyboard itself looks like it comes out of a Thinkpad, with metal plates stuck
+to it to add heft. The keyboard connects to a controller board in the top right.
+
+[Images of keyboard internals](images/)
 
 Repairing the Trackpoint
 ------------------------
