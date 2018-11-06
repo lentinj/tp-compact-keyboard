@@ -231,3 +231,19 @@ http://webdoc.lenovo.com.cn/lenovowsi/new_cskb/att/147372/%E5%BF%AB%E9%80%9F%E4%
 Unlike the Compact keyboards, the keyboard does not have (known) built-in
 Fn-Lock functions, Fn, Fn-F1 and F1 are all separate scancodes, so they can be
 remapped using a ``hwdb`` database.
+
+Other Keyboards: Thinkpad Tablet 2 Keyboard
+-------------------------------------------
+
+Older than all the above, it was sold with the Tablet 2 and has a fold-out stand
+for said tablet.
+
+It doesn't have a trackpoint, rather a Blackberry-esque tiny trackpad which you
+use like a trackball.
+
+Dissassembly:
+
+* Unclip the frame around the keyboard, the power slider just pokes the real button underneath.
+* Undo the 4 screws holding the keyboard down (including the tri-wing screw with ground connection)
+* Gently pry the keyboard from the metal backing plate it's glued to, remove 2 keyboard ribbon cables. Do not pry the backing plate away from the bottom plastic.
+* Undo all the metal backing plate screws.
