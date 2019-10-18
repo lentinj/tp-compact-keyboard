@@ -50,6 +50,18 @@ Use either the [tp-compact-bt-keyboard](tp-compact-bt-keyboard/) or the
 [tp-compact-usb-keyboard](tp-compact-usb-keyboard/) utilities in this
 repository, or apply the [kernel-patches](kernel-patch/) to your kernel.
 
+Disable FnLk by default
+-----------------------
+
+Linux assumes you want Fn keys to act as Fn keys and Enables Fn-Lock, however
+uyou may want the opposite. If so create a udev rule with the following command:
+
+    cat <<'EOF' > /etc/udev/rules.d/99-thinkpad-compact-keyboard.rules
+    SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="604*", \
+        TEST == "/sys/$devpath/fn_lock", \
+        RUN += "/bin/sh -c 'echo 0 > \"/sys/$devpath/fn_lock\"'"
+    EOF
+
 How I Did It
 ------------
 
