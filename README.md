@@ -54,12 +54,24 @@ Disable FnLk by default
 -----------------------
 
 Linux assumes you want Fn keys to act as Fn keys and Enables Fn-Lock, however
-uyou may want the opposite. If so create a udev rule with the following command:
+you may want the opposite. 
+
+Thinkpad TrackPoint Keyboard II is in Linux kernel 5.19 and greater. 
+
+If so create a udev rule with the following command:
 
     cat <<'EOF' > /etc/udev/rules.d/99-thinkpad-compact-keyboard.rules
-    SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="604*", \
-        TEST == "/sys/$devpath/fn_lock", \
-        RUN += "/bin/sh -c 'echo 0 > \"/sys/$devpath/fn_lock\"'"
+    #ThinkPad TrackPoint Keyboard I & II USB
+    SUBSYSTEM=="hid", \
+    DRIVER=="lenovo", \
+    ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="6047|60ee", \
+    ATTR{fn_lock}="0"
+
+    #ThinkPad TrackPoint Keyboard I & II Bluetooth
+    SUBSYSTEM=="input", \
+    ATTRS{id/vendor}=="17ef", ATTRS{id/product}=="6048|60e1", \
+    TEST=="/sys/$devpath/device/fn_lock", \
+    RUN+="/bin/sh -c 'echo 0 > \"/sys/$devpath/device/fn_lock\"'"
     EOF
 
 How I Did It
