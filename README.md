@@ -59,8 +59,9 @@ you may want the opposite.
 Thinkpad TrackPoint Keyboard II is in Linux kernel 5.19 and greater. 
 
 If so create a udev rule with the following command:
-
-    cat <<'EOF' > /etc/udev/rules.d/99-thinkpad-compact-keyboard.rules
+ 
+    #Creates udev rules file
+    cat <<'EOF' > /etc/udev/rules.d/99-thinkpad-trackpoint-disable-fn-lock.rules
     #ThinkPad TrackPoint Keyboard I & II USB
     SUBSYSTEM=="hid", \
     DRIVER=="lenovo", \
@@ -74,6 +75,9 @@ If so create a udev rule with the following command:
     RUN+="/bin/sh -c 'echo 0 > \"/sys/$devpath/device/fn_lock\"'"
     EOF
 
+    #Run commandsreload udev
+    udevadm control --reload-rules && udevadm trigger
+    
 How I Did It
 ------------
 
