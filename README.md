@@ -75,7 +75,7 @@ If so create a udev rule with the following command:
     RUN+="/bin/sh -c 'echo 0 > \"/sys/$devpath/device/fn_lock\"'"
     EOF
 
-    #Run commandsreload udev
+    #Run commands to reload udev
     udevadm control --reload-rules && udevadm trigger
     
 How I Did It
