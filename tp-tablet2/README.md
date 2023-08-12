@@ -27,3 +27,8 @@ Dissassembly
   * The trackpoint ribbon is underneath the trackpoint
   * Do **not** pry the backing plate away from the bottom plastic, whilst some screws are visible and it looks like it will come off that way, there are more screws underneath the keyboard.q
 * Undo all the metal backing plate screws.
+
+Drivers
+-------
+
+Drivers are listed [as part of the Thinkpad Tablet 2 page](https://pcsupport.lenovo.com/gb/en/products/tablets/thinkpad-tablet-series/thinkpad-tablet-2/downloads/driver-list), "ThinkPad Optical TrackPoint Driver for Windows 8.1 (32-bit), 8 (32-bit) - ThinkPad Tablet 2" & "Hotkey Features Integration for Windows 8.1 (32-bit, 64-bit) - ThinkPad". However, neither seem to do anything in a Windows 8 VM.
