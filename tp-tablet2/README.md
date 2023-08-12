@@ -1,11 +1,21 @@
 Thinkpad Tablet 2 Keyboard
 ==========================
 
+* [User guide](https://download.lenovo.com/ibmdl/pub/pc/pccbbs/mobiles_pdf/tablet2_bluetooth_keyboard_ug_en_0b40450.pdf)
+
 Older than the compact keyboards the above, it was sold with the Tablet 2 and has a fold-out stand
 for said tablet.
 
 It doesn't have a trackpoint, rather a Blackberry-esque tiny trackpad which you
 use like a trackball.
+
+Pairing
+-------
+
+Pairing is a bit temperamental, it helps to reset the keyboard.
+
+* Enter pair mode: ``Fn``+``Delete``
+* Full reset: Turn off keyboard, pull power switch pressing ``Esc``+``Delete`` until status LED blinks Amber.
 
 Dissassembly
 ------------
