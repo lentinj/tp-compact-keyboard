@@ -30,7 +30,7 @@ whether fn_lock is enabled by:
     echo 0 > /sys/bus/hid/devices/*17EF\:604*/fn_lock 
 
 The kernel can't currently switch fn_lock automatically for you, however you
-can use [esekeyd](https://sites.google.com/site/blabdupp/esekeyd) to map
+can use [esekeyd](https://github.com/burghardt/esekeyd) to map
 KEY_FN_ESC to a script such as:
 
     { grep -q 1 /sys/bus/hid/devices/*17EF\:604*/fn_lock && echo 0 || echo 1; } \
