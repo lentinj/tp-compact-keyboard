@@ -2,13 +2,13 @@
 
 A USB keyboard with a connector built-in to the hinge.
 
-![keyboard](x1-tablet-keyboard/keyboard.jpg)
+![keyboard](keyboard.jpg)
 
 ## Adaptor for use as a normal USB keyboard
 
 The PCB can attach over the tablet's mounting posts, connecting with the pogo pins, breaking these out ready for a USB cable to be attached.
 
-The gerbers can be found in [x1-tablet-keyboard/Gerber_tp-x1t-gen1-adapter.zip], which can be uploaded to JLPCB to manufacture more.
+The gerbers can be found in [Gerber_tp-x1t-gen1-adapter.zip](Gerber_tp-x1t-gen1-adapter.zip), which can be uploaded to JLPCB to manufacture more.
 
 Then, solder a USB cable to the pins. The colour scheme *should* (but may not) be:
 
