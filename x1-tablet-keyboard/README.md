@@ -13,8 +13,8 @@ The gerbers can be found in [Gerber_tp-x1t-gen1-adapter.zip](https://github.com/
 Then, solder a USB cable to the pins. The colour scheme *should* (but may not) be:
 
 * GND: Black
-* DN: Green
-* DP: White
+* DN: White
+* DP: Green
 * 5v: Red
 
 This is my first attempt at designing a PCB, and it probably shows. The holes are also slightly too tight in the boards I got back, and need filing for a proper fit.
