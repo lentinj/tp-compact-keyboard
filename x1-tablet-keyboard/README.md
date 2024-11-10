@@ -1,4 +1,4 @@
-# X1 Tablet Thin Keyboard (gen1)
+# X1 Tablet Thin Keyboard (gen1 / gen2)
 
 A USB keyboard with a connector built-in to the hinge.
 
@@ -20,10 +20,24 @@ Then, solder a USB cable to the pins. The colour scheme *should* (but may not) b
 This is my first attempt at designing a PCB, and it probably shows. The holes are also slightly too tight in the boards I got back, and need filing for a proper fit.
 It could also be extened by including a USB socket on the PCB.
 
-## Other adaptors
+### Other adaptors
 
 This isn't the first attempt at attaching a regular USB cable to a X1 tablet, however 
 
 * https://www.reddit.com/r/thinkpad/comments/10klmxv/pinout_of_thinkpad_x1_tablet_gen1_keyboard/?rdt=51762
 * https://www.reddit.com/r/thinkpad/comments/10gneh1/diy_a_usb_thinkpad_keyboard_with_backlit_and/
 * https://spawn.link/posts/2019-02-18_-_lenovo_x1_tablet_keyboard/
+
+## Slow trackpoint on gen2 keyboards
+
+The trackpoint sensitivity for gen2 keyboards is currently far lower than libinput sensivity can adjust. The reason behind this libinput doesn't know it's a trackpoint. This can be worked around with the following in ``/etc/udev/hwdb.d/90-thinkpad-x1-tablet-keyboard.hwdb``:
+
+```
+# Lenovo "PRIMAX ThinkPad X1 Tablet Thin Keyboard Gen 2"
+id-input:modalias:input:b0003v17EFp60A3e0111-e0,1,2,4,*
+ ID_INPUT_POINTINGSTICK=1
+```
+
+This isn't a problem for gen1, since the hid-rmi driver it uses exposes a full PS/2 port which the trackpoint driver attaches to. In gen2, hid-multitouch receives a combined HID report, with both trackpad & touchpoint events.
+
+The real solution is probably to register all mice applications as trackpoints [in hid-multitouch](https://github.com/torvalds/linux/blob/de2f378f2b771b39594c04695feee86476743a69/drivers/hid/hid-multitouch.c#L1653) (aside: This says hid core will add a prefix, but it won't because [that needs HID_QUIRK_INPUT_PER_APP](https://github.com/torvalds/linux/blob/de2f378f2b771b39594c04695feee86476743a69/drivers/hid/hid-input.c#L2006), which MT_CLS_WIN_8_FORCE_MULTI_INPUT turns off). Generally, [this quirk is used to register trackpoint devices](https://github.com/torvalds/linux/commit/4a6a4c966ccf38b2d74c05bb7c7dd3b94dbb3c30)
