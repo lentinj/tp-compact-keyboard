@@ -71,8 +71,7 @@ If so create a udev rule with the following command:
     #ThinkPad TrackPoint Keyboard I & II Bluetooth
     SUBSYSTEM=="input", \
     ATTRS{id/vendor}=="17ef", ATTRS{id/product}=="6048|60e1", \
-    TEST=="/sys/$devpath/device/fn_lock", \
-    RUN+="/bin/sh -c 'echo 0 > \"/sys/$devpath/device/fn_lock\"'"
+    RUN+="/bin/sh -c 'sleep 0.1; FILE=\"/sys/$devpath/device/fn_lock\"; [ -e \"$FILE\" ] && echo 0 > \"$FILE\"'"
     EOF
 
     #Run commands to reload udev
