@@ -3,6 +3,12 @@ Thinkpad Tablet 2 Keyboard
 
 * [User guide](https://download.lenovo.com/ibmdl/pub/pc/pccbbs/mobiles_pdf/tablet2_bluetooth_keyboard_ug_en_0b40450.pdf)
 
+* **HID Name:** ThinkPad Keyboard / ThinkPad Keyboard Mouse / ThinkPad Keyboard (3 HID endpoints)
+* **Model:** EBK-209A
+* **Fru P/N:** O4Y1511
+* **Vendor ID:** 0x17ef
+* **Product ID:** 0x603f
+
 Older than the compact keyboards the above, it was sold with the Tablet 2 and has a fold-out stand
 for said tablet.
 
@@ -16,6 +22,7 @@ Pairing is a bit temperamental, it helps to reset the keyboard.
 
 * Enter pair mode: ``Fn``+``Delete``
 * Full reset: Turn off keyboard, pull power switch pressing ``Esc``+``Delete`` until status LED blinks Amber.
+  * There is also a paperclip hole next to the charging LED that also factory resets
 
 Dissassembly
 ------------

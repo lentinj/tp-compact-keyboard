@@ -2,6 +2,12 @@
 
 [Images of USB keyboard internals](tp-compact-usb-keyboard/)
 
+* **HID Name:** Lenovo ThinkPad Compact Keyboard with TrackPoint
+* **Model:** KU-1255
+* **Fru P/N:** 03X8746
+* **Vendor ID:** 0x17ef
+* **Product ID:** 0x6047
+
 The Lenovo Thinkpad Compact Keyboard with TrackPoint is a repackaging of a
 Thinkpad laptop keyboard into a stand-alone case with a cabled USB connection
 to the computer. Following the current fashion, Lenovo has made the top row of

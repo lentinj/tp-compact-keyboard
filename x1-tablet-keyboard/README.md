@@ -4,6 +4,11 @@ A USB keyboard with a connector built-in to the hinge.
 
 ![keyboard](keyboard.jpg)
 
+* **HID Name:** Lenovo ThinkPad X1 Tablet Thin Keyboard / Lenovo ThinkPad X1 Tablet Thin Keyboard Gen 2
+* **Fru P/N:** 01AW626 (gen1) / 01AY129 (gen2)
+* **Vendor ID:** 0x17ef
+* **Product ID:** 0x6085 (gen1) / 0x60a3 (gen2)
+
 ## Adaptor for use as a normal USB keyboard
 
 The PCB can attach over the tablet's mounting posts, connecting with the pogo pins, breaking these out ready for a USB cable to be attached.

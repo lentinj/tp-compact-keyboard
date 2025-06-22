@@ -2,6 +2,12 @@
 
 [Images of BT keyboard internals](http://bdm.cc/2016/06/lenovo-bluetooth-keyboard-repairs/)
 
+* **HID Name:** ThinkPad Compact Bluetooth Keyboard with TrackPoint
+* **Model:** KT-1255
+* **Fru P/N:** 03X8713
+* **Vendor ID:** 0x17ef
+* **Product ID:** 0x6048
+
 The Lenovo Thinkpad Compact Keyboard with TrackPoint is a repackaging
 of a Thinkpad laptop keyboard into a stand-alone case with a Bluetooth
 connection to the computer. Following the current fashion, Lenovo has made the
