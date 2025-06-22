@@ -10,6 +10,8 @@ The PCB can attach over the tablet's mounting posts, connecting with the pogo pi
 
 The gerbers can be found in [Gerber_tp-x1t-gen1-adapter.zip](https://github.com/lentinj/tp-compact-keyboard/raw/master/x1-tablet-keyboard/Gerber_tp-x1t-gen1-adapter.zip), which can be uploaded to JLPCB to manufacture more.
 
+Magnets can be superglued to the PCB to hold it on, I used 8mm diameter magnets off Amazon. Hold the PCB in place on the keyboard, and they will naturally find the corresponding magnet in the connector.
+
 Then, solder a USB cable to the pins. The colour scheme *should* (but may not) be:
 
 * GND: Black
@@ -17,12 +19,16 @@ Then, solder a USB cable to the pins. The colour scheme *should* (but may not) b
 * DP: Green
 * 5v: Red
 
-This is my first attempt at designing a PCB, and it probably shows. The holes are also slightly too tight in the boards I got back, and need filing for a proper fit.
-It could also be extened by including a USB socket on the PCB.
+This is my first attempt at designing a PCB, and it probably shows.
+
+* The holes are fractionally too tight, and need a slight amount of filing to fit
+* The hole closest to 5v should be ~1mm closer to the 5v pin, again, filing solves this
+
+You could extend this further by designing a USB socket onto the PCB, but what I've got is fine for me at this stage.
 
 ### Other adaptors
 
-This isn't the first attempt at attaching a regular USB cable to a X1 tablet, however 
+This isn't the first attempt at attaching a regular USB cable to a X1 tablet, however IMO this is the quickest to replicate.
 
 * https://www.reddit.com/r/thinkpad/comments/10klmxv/pinout_of_thinkpad_x1_tablet_gen1_keyboard/?rdt=51762
 * https://www.reddit.com/r/thinkpad/comments/10gneh1/diy_a_usb_thinkpad_keyboard_with_backlit_and/
